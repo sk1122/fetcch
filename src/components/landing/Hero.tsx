@@ -5,7 +5,7 @@ import SwapButton from './SwapButton';
 const Hero = () => {
   return (
     <section className="lg:custom-bg h-full dark:bg-none">
-      <div className="mx-auto min-h-screen  max-w-8xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto min-h-[90vh]  max-w-8xl px-4 sm:px-6 lg:px-8">
         <div className="mt-12 flex w-full flex-col justify-center text-center lg:mt-32">
           <h1 className="mt-16 text-7xl font-bold text-fetcch-dark dark:text-white">
             Seamless <br />

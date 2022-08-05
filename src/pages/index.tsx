@@ -1,5 +1,5 @@
-import Hero from '@/components/Hero';
-import Process from '@/components/Process';
+import Hero from '@/components/landing/Hero';
+import Process from '@/components/landing/Process';
 import { Meta } from '@/layouts/Meta';
 import { Main } from '@/templates/Main';
 

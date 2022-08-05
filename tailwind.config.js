@@ -30,9 +30,6 @@ module.exports = {
         'fetcch-dark': '#06020D',
         'fetcch-purple': '#7733FF',
       },
-      height: {
-        section: '90vh',
-      },
     },
   },
   plugins: [],

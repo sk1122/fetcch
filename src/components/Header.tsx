@@ -3,7 +3,7 @@ import { MenuIcon, XIcon } from '@heroicons/react/outline';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import SwapButton from './SwapButton';
+import SwapButton from './landing/SwapButton';
 
 const navlinks = [
   { name: 'Developers', href: '/' },
