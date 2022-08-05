@@ -1,3 +1,22 @@
 @tailwind base;
+@import './fonts.css';
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  body {
+    background: url(/assets/images/right.svg) no-repeat right top;
+  }
+
+  .btn-tilt {
+    transform: perspective(500px) rotateY(calc(20deg*var(--_i,1.2)));
+  }
+
+  .ext-btn {
+    @apply rounded-md border border-fetcch-mustard bg-transparent px-6 py-3 text-lg font-semibold text-fetcch-mustard transition-all duration-300 ease-in-out hover:bg-fetcch-mustard hover:text-white hover:shadow-lg hover:shadow-fetcch-mustard/50 
+  }
+
+  .custom-bg {
+    background: url(/assets/images/left.svg) no-repeat left bottom;
+  }
+}

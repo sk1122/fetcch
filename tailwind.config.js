@@ -22,10 +22,16 @@ module.exports = {
       maxWidth: {
         '8xl': '88rem',
       },
+      fontFamily: {
+        sans: ['Montserrat', 'sans-serif'],
+      },
       colors: {
         'fetcch-mustard': '#FDB658',
         'fetcch-dark': '#06020D',
         'fetcch-purple': '#7733FF',
+      },
+      height: {
+        section: '90vh',
       },
     },
   },

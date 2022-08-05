@@ -13,14 +13,11 @@ import { publicProvider } from 'wagmi/providers/public';
 
 const { chains, provider } = configureChains(
   [chain.mainnet, chain.polygon, chain.optimism, chain.arbitrum],
-  [
-    alchemyProvider({ apiKey: '_gg7wSSi0KMBsdKnGVfHDueq6xMB9EkC' }), // use environment variables
-    publicProvider(),
-  ]
+  [alchemyProvider({ apiKey: process.env.ALCHEMY_API_KEY }), publicProvider()]
 );
 
 const { connectors } = getDefaultWallets({
-  appName: 'Wagpay ID',
+  appName: 'fetcch',
   chains,
 });
 
@@ -40,7 +37,7 @@ export default function ConnectWallet({
       <RainbowKitProvider
         coolMode
         appInfo={{
-          appName: 'Wagpay ID',
+          appName: 'fetcch',
         }}
         chains={chains}
         theme={{ lightMode: lightTheme(), darkMode: darkTheme() }}

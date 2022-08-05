@@ -14,6 +14,17 @@ class MyDocument extends Document {
       >
         <Head>
           <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          {/* ts-ignore */}
+          <link
+            rel="preconnect"
+            href="https://fonts.gstatic.com"
+            crossOrigin="true"
+          />
+          <link
+            href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
+            rel="stylesheet"
+          ></link>
         </Head>
         <body className="bg-white dark:bg-fetcch-dark">
           <Main />
