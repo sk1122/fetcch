@@ -10,7 +10,7 @@ Run the following command on your local environment:
 
 ```shell
 git clone --depth=1 https://github.com/glitch-afk/fetcch.git 
-cd swapping-dashboard-wagpay
+cd fetcch
 npm install or yarn
 ```
 
