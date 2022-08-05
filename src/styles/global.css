@@ -13,7 +13,7 @@
   }
 
   .ext-btn {
-    @apply rounded-md border border-fetcch-mustard bg-transparent px-6 py-3 text-lg font-semibold text-fetcch-mustard transition-all duration-300 ease-in-out hover:bg-fetcch-mustard hover:text-white hover:shadow-lg hover:shadow-fetcch-mustard/50 
+    @apply rounded-md border border-fetcch-mustard bg-transparent px-6 py-3 text-sm lg:text-lg font-semibold text-fetcch-mustard transition-all duration-300 ease-in-out hover:bg-fetcch-mustard hover:text-white hover:shadow-lg hover:shadow-fetcch-mustard/50 
   }
 
   .custom-bg {

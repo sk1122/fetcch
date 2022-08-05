@@ -11,7 +11,7 @@ const navlinks = [
   { name: 'Contact Us', href: '/' },
 ];
 
-export default function Example() {
+export default function Header() {
   return (
     <Disclosure as="nav" className="bg-transparent">
       {({ open }) => (
