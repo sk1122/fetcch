@@ -29,7 +29,7 @@ const processCards = [
 
 const Process = () => {
   return (
-    <section className="mx-auto mb-20 flex min-h-[90vh] max-w-8xl flex-col items-center">
+    <section className="mx-auto mb-20 flex min-h-[90vh] max-w-8xl flex-col items-center justify-start">
       <h2 className="mx-auto mb-20 w-full text-center text-4xl font-bold md:mb-32">
         Our Process
       </h2>

@@ -1,5 +1,6 @@
 import Hero from '@/components/landing/Hero';
 import Process from '@/components/landing/Process';
+import Sayhello from '@/components/landing/Sayhello';
 import { Meta } from '@/layouts/Meta';
 import { Main } from '@/templates/Main';
 
@@ -10,6 +11,7 @@ const Index = () => {
     >
       <Hero />
       <Process />
+      <Sayhello />
     </Main>
   );
 };
