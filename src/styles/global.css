@@ -1,5 +1,6 @@
 @tailwind base;
 @import './fonts.css';
+@import "./toggle.css";
 @tailwind components;
 @tailwind utilities;
 
@@ -30,6 +31,11 @@
 
   input[type=number] {
       -moz-appearance:textfield;
+  }
+
+  .form-radio:focus {
+    @apply outline-none;
+    box-shadow: none !important;
   }
 
   @variants responsive {

@@ -15,7 +15,6 @@ class MyDocument extends Document {
         <Head>
           <script dangerouslySetInnerHTML={{ __html: themeScript }} />
           <link rel="preconnect" href="https://fonts.googleapis.com" />
-          {/* ts-ignore */}
           <link
             rel="preconnect"
             href="https://fonts.gstatic.com"

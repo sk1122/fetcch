@@ -4,8 +4,8 @@ import SwapCard from './SwapCard';
 
 const Swap = () => {
   return (
-    <div className="mx-auto flex min-h-[90vh] flex-col items-center px-2">
-      <div className="mt-20 flex w-full max-w-5xl flex-col rounded-md bg-white p-2 sm:mt-32">
+    <div className="mx-auto flex min-h-screen flex-col items-center px-2">
+      <div className="mt-4 flex w-full max-w-5xl flex-col rounded-md bg-white p-2 sm:mt-24">
         <SwapCard />
       </div>
     </div>
