@@ -18,7 +18,7 @@ const SwapCard = () => {
   return (
     <section className="col-span-full flex w-full flex-col space-y-4 px-2 lg:col-span-3 lg:px-0">
       {/* chain section */}
-      <h1 className="text-lg font-bold">Currency Swap</h1>
+      <h1 className="pl-2 text-lg font-bold">Currency Swap</h1>
       <div className="w-full rounded-md">
         <div className="flex w-full justify-evenly space-x-3">
           <div className="w-1/2 rounded-md bg-fetcch-purple/5 p-2">
@@ -37,7 +37,7 @@ const SwapCard = () => {
       </div>
 
       {/* coin section */}
-      <h2 className="font-semibold">Selected Tokens</h2>
+      <h2 className="pl-2 font-semibold">Selected Tokens</h2>
       <div className="flex w-full flex-col justify-evenly space-y-6 space-x-0 md:flex-row md:space-y-0 md:space-x-3">
         <div className="w-full rounded-md bg-fetcch-purple/5 p-2 md:w-1/2">
           <label
@@ -102,8 +102,10 @@ const SwapCard = () => {
       </div>
 
       {/* section #3 */}
-      <div className="flex w-full items-center justify-between space-x-4 pl-2 md:w-2/5">
-        <h2 className="text-left font-semibold">Select bridge automatically</h2>
+      <div className="flex w-full items-center justify-between space-x-4 md:w-2/5">
+        <h2 className="pl-2 text-left font-semibold">
+          Select bridge automatically
+        </h2>
         <Switch
           checked={toggle}
           onChange={setToggle}
