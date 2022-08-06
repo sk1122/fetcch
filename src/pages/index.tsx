@@ -1,3 +1,4 @@
+import Faq from '@/components/landing/Faq';
 import Hero from '@/components/landing/Hero';
 import Process from '@/components/landing/Process';
 import Sayhello from '@/components/landing/Sayhello';
@@ -12,6 +13,7 @@ const Index = () => {
       <Hero />
       <Process />
       <Sayhello />
+      <Faq />
     </Main>
   );
 };
