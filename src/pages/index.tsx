@@ -1,3 +1,4 @@
+import Header from '@/components/Header';
 import Faq from '@/components/landing/Faq';
 import Hero from '@/components/landing/Hero';
 import Process from '@/components/landing/Process';
@@ -10,6 +11,7 @@ const Index = () => {
     <Main
       meta={<Meta title="fetcch" description="Seamless Crosschain Swapping" />}
     >
+      <Header />
       <Hero />
       <Process />
       <Sayhello />

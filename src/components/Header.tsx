@@ -13,21 +13,23 @@ const navlinks = [
 
 export default function Header() {
   return (
-    <Disclosure as="nav" className="bg-transparent">
+    <Disclosure as="nav" className="bg-transparent py-4">
       {({ open }) => (
         <>
           <div className="mx-auto max-w-8xl px-4 sm:px-6 lg:px-8">
             <div className="flex h-16 items-center justify-between">
               <div className="flex items-center">
-                <div className="shrink-0">
-                  <Image
-                    src={'/assets/images/logo.svg'}
-                    width={160}
-                    height={60}
-                    alt="logo"
-                    className="select-none"
-                  />
-                </div>
+                <Link href="/">
+                  <a className="shrink-0">
+                    <Image
+                      src={'/assets/images/logo.svg'}
+                      width={160}
+                      height={60}
+                      alt="logo"
+                      className="select-none"
+                    />
+                  </a>
+                </Link>
               </div>
               <div className="hidden sm:ml-6 sm:block">
                 <div className="hidden sm:ml-6 sm:block">
