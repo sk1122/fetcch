@@ -1,8 +1,12 @@
 import { Switch, Transition } from '@headlessui/react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useAccount } from 'wagmi';
 
+import { useBridge } from '@/hooks/useBridge';
 import { Swap } from '@/icons/swap';
+import type { Chain, Coin } from '@/types';
 
+import SwapButton from '../landing/SwapButton';
 import ChainSelect from './ChainSelect';
 import CoinSelect from './CoinSelect';
 import WalletConnect from './shared/WalletConnect';
@@ -13,8 +17,127 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
 }
 
+const chainList: Chain[] = [
+  {
+    id: 1,
+    name: 'Rinkeby (ETH)',
+    icon: 'https://movricons.s3.ap-south-1.amazonaws.com/Ether.svg',
+    chainId: '1',
+  },
+  {
+    id: 2,
+    name: 'Mumbai (POL)',
+    icon: 'https://movricons.s3.ap-south-1.amazonaws.com/Matic.svg',
+    chainId: '137',
+  },
+];
+
+const coins: { '1': Coin[]; '137': Coin[] } = {
+  '1': [
+    {
+      id: 1,
+      name: 'USDC',
+      icon: 'https://movricons.s3.ap-south-1.amazonaws.com/Ether.svg',
+      address: '',
+      decimals: 6,
+      chainId: '1',
+    },
+    {
+      id: 2,
+      name: 'USDT',
+      icon: 'https://movricons.s3.ap-south-1.amazonaws.com/Matic.svg',
+      address: '',
+      decimals: 6,
+      chainId: '1',
+    },
+  ],
+  '137': [
+    {
+      id: 1,
+      name: 'USDC',
+      icon: 'https://movricons.s3.ap-south-1.amazonaws.com/Ether.svg',
+      address: '',
+      decimals: 6,
+      chainId: '137',
+    },
+    {
+      id: 2,
+      name: 'USDT',
+      icon: 'https://movricons.s3.ap-south-1.amazonaws.com/Matic.svg',
+      address: '',
+      decimals: 6,
+      chainId: '137',
+    },
+  ],
+};
+
 const SwapCard = () => {
+  const { address } = useAccount();
+
   const [toggle, setToggle] = useState(true);
+  const [fromChain, setFromChain] = useState(chainList[0] as Chain);
+  const [toChain, setToChain] = useState(chainList[1] as Chain);
+  const [fromChainList, setFromChainList] = useState([chainList[1]]);
+  const [toChainList, setToChainList] = useState([chainList[0]]);
+
+  const { estimateFees } = useBridge();
+
+  // @ts-ignore
+  const [fromCoin, setFromCoin] = useState(coins[fromChain.chainId][0]);
+  // @ts-ignore
+  const [toCoin, setToCoin] = useState(coins[toChain.chainId][1]);
+  const [fromAmount, setFromAmount] = useState('');
+  const [toAmount, setToAmount] = useState('0.00');
+
+  const changeFromChain = (value: Chain) => {
+    if (toChain) {
+      if (value.name === toChain.name) {
+        setToChain(fromChain);
+      }
+
+      setFromChain(value);
+      setFromChainList(chainList.filter((v) => v.name !== value.name));
+      setToChainList(chainList.filter((v) => v.name === value.name));
+    }
+  };
+
+  const changeToChain = (value: Chain) => {
+    if (fromChain) {
+      if (value.name === fromChain.name) {
+        setFromChain(toChain);
+      }
+
+      setToChain(value);
+      setToChainList(chainList.filter((v) => v.name !== value.name));
+      setFromChainList(chainList.filter((v) => v.name === value.name));
+    }
+  };
+
+  const swapChain = () => {
+    const fChain = fromChain;
+    const tChain = toChain;
+
+    const fCoin = fromCoin;
+    const tCoin = toCoin;
+
+    setFromChain(toChain);
+    setToChain(fChain);
+
+    setFromChainList(chainList.filter((v) => v.name !== tChain.name));
+    setToChainList(chainList.filter((v) => v.name !== fChain.name));
+
+    setFromCoin(tCoin);
+    setToCoin(fCoin);
+  };
+
+  useEffect(() => {
+    if (fromCoin && toCoin && fromChain && toChain && fromAmount) {
+      estimateFees(fromCoin as Coin, toCoin as Coin, Number(fromAmount)).then(
+        (a) => setToAmount(a.amountOut.toString())
+      );
+    }
+  }, [fromCoin, toCoin, fromChain, toChain, fromAmount]);
+
   return (
     <section className="col-span-full flex w-full flex-col space-y-4 px-2 lg:col-span-3 lg:px-0">
       {/* chain section */}
@@ -23,15 +146,23 @@ const SwapCard = () => {
         <div className="flex w-full justify-evenly space-x-3">
           <div className="w-1/2 rounded-md bg-fetcch-purple/5 p-2">
             <h3 className="mb-2 text-sm">Source Chain</h3>
-            <ChainSelect />
+            <ChainSelect
+              chain={fromChain}
+              setChain={changeFromChain}
+              chainList={fromChainList as Chain[]}
+            />
           </div>
           <div className="hidden md:mt-2 md:block">
-            <Swap fill="#7733FF" />
+            <Swap fill="#7733FF" onClick={() => swapChain()} />
           </div>
 
           <div className="w-1/2 rounded-md bg-fetcch-purple/5 p-2">
             <h3 className="mb-2 text-sm">Destination Chain</h3>
-            <ChainSelect />
+            <ChainSelect
+              chain={toChain}
+              setChain={changeToChain}
+              chainList={toChainList as Chain[]}
+            />
           </div>
         </div>
       </div>
@@ -56,7 +187,9 @@ const SwapCard = () => {
                 type="number"
                 name="amount"
                 id="amount"
-                className="block h-10 w-3/5 rounded-l-md border-none pl-7 outline-none sm:text-sm"
+                value={fromAmount}
+                onChange={(e) => setFromAmount(e.target.value)}
+                className="block h-10 w-3/5 rounded-l-md border-none pl-7 text-black outline-none sm:text-sm"
                 placeholder="0.00"
               />
 
@@ -64,7 +197,11 @@ const SwapCard = () => {
                 <span className="pr-2 text-xs font-semibold text-fetcch-purple underline underline-offset-1">
                   MAX
                 </span>
-                <CoinSelect />
+                <CoinSelect
+                  value={fromCoin as Coin}
+                  setValue={setFromCoin}
+                  coins={coins[fromChain.chainId]}
+                />
               </div>
             </div>
           </div>
@@ -86,7 +223,8 @@ const SwapCard = () => {
                 type="number"
                 name="amount"
                 id="amount"
-                className="block h-10 w-3/5 rounded-l-md border-none bg-white pl-7 outline-none sm:text-sm"
+                value={toAmount}
+                className="block h-10 w-3/5 rounded-l-md border-none bg-white pl-7 text-black outline-none sm:text-sm"
                 placeholder="0.00"
                 disabled
               />
@@ -94,7 +232,11 @@ const SwapCard = () => {
                 <span className="pr-2 text-xs font-semibold text-fetcch-purple underline underline-offset-1">
                   MAX
                 </span>
-                <CoinSelect />
+                <CoinSelect
+                  value={toCoin as Coin}
+                  setValue={setToCoin}
+                  coins={coins[toChain.chainId]}
+                />
               </div>
             </div>
           </div>
@@ -193,7 +335,12 @@ const SwapCard = () => {
           <ToggleOff />
         </Transition>
       )}
-      <WalletConnect />
+      {!address && <WalletConnect />}
+      {address && (
+        <div>
+          <SwapButton classes="w-40 px-6 py-2 text-base hidden md:flex" />
+        </div>
+      )}
     </section>
   );
 };
