@@ -2,7 +2,7 @@ import { Switch, Transition } from '@headlessui/react';
 import React, { useState } from 'react';
 
 import { Swap } from '@/icons/swap';
-import type { Chain } from '@/types';
+import type { Chain, Coin } from '@/types';
 
 import ChainSelect from './ChainSelect';
 import CoinSelect from './CoinSelect';
@@ -19,13 +19,54 @@ const chainList: Chain[] = [
     id: 1,
     name: 'Rinkeby (ETH)',
     icon: 'https://movricons.s3.ap-south-1.amazonaws.com/Ether.svg',
+    chainId: '1',
   },
   {
     id: 2,
     name: 'Mumbai (POL)',
     icon: 'https://movricons.s3.ap-south-1.amazonaws.com/Matic.svg',
+    chainId: '137',
   },
 ];
+
+const coins: { '1': Coin[]; '137': Coin[] } = {
+  '1': [
+    {
+      id: 1,
+      name: 'USDC',
+      icon: 'https://movricons.s3.ap-south-1.amazonaws.com/Ether.svg',
+      address: '',
+      decimals: 6,
+      chainId: '1',
+    },
+    {
+      id: 2,
+      name: 'USDT',
+      icon: 'https://movricons.s3.ap-south-1.amazonaws.com/Matic.svg',
+      address: '',
+      decimals: 6,
+      chainId: '1',
+    },
+  ],
+  '137': [
+    {
+      id: 1,
+      name: 'USDC',
+      icon: 'https://movricons.s3.ap-south-1.amazonaws.com/Ether.svg',
+      address: '',
+      decimals: 6,
+      chainId: '137',
+    },
+    {
+      id: 2,
+      name: 'USDT',
+      icon: 'https://movricons.s3.ap-south-1.amazonaws.com/Matic.svg',
+      address: '',
+      decimals: 6,
+      chainId: '137',
+    },
+  ],
+};
 
 const SwapCard = () => {
   const [toggle, setToggle] = useState(true);
@@ -33,6 +74,11 @@ const SwapCard = () => {
   const [toChain, setToChain] = useState(chainList[1] as Chain);
   const [fromChainList, setFromChainList] = useState([chainList[1]]);
   const [toChainList, setToChainList] = useState([chainList[0]]);
+
+  // @ts-ignore
+  const [fromCoin, setFromCoin] = useState(coins[fromChain.chainId][0]);
+  // @ts-ignore
+  const [toCoin, setToCoin] = useState(coins[toChain.chainId][1]);
 
   const changeFromChain = (value: Chain) => {
     if (toChain) {
@@ -61,10 +107,18 @@ const SwapCard = () => {
   const swapChain = () => {
     const fChain = fromChain;
     const tChain = toChain;
+
+    const fCoin = fromCoin;
+    const tCoin = toCoin;
+
     setFromChain(toChain);
     setToChain(fChain);
+
     setFromChainList(chainList.filter((v) => v.name !== tChain.name));
     setToChainList(chainList.filter((v) => v.name !== fChain.name));
+
+    setFromCoin(tCoin);
+    setToCoin(fCoin);
   };
 
   return (
@@ -124,7 +178,11 @@ const SwapCard = () => {
                 <span className="pr-2 text-xs font-semibold text-fetcch-purple underline underline-offset-1">
                   MAX
                 </span>
-                <CoinSelect />
+                <CoinSelect
+                  value={fromCoin as Coin}
+                  setValue={setFromCoin}
+                  coins={coins[fromChain.chainId]}
+                />
               </div>
             </div>
           </div>
@@ -154,7 +212,11 @@ const SwapCard = () => {
                 <span className="pr-2 text-xs font-semibold text-fetcch-purple underline underline-offset-1">
                   MAX
                 </span>
-                <CoinSelect />
+                <CoinSelect
+                  value={toCoin as Coin}
+                  setValue={setToCoin}
+                  coins={coins[toChain.chainId]}
+                />
               </div>
             </div>
           </div>

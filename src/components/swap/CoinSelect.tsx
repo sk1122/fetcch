@@ -1,31 +1,22 @@
 import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/solid';
-import React, { Fragment, useState } from 'react';
+import React, { Fragment } from 'react';
+
+import type { Coin } from '@/types';
 
 function classNames(...classes: any) {
   return classes.filter(Boolean).join(' ');
 }
 
-const coins = [
-  {
-    id: 1,
-    name: 'USDC',
-    icon: 'https://movricons.s3.ap-south-1.amazonaws.com/Ether.svg',
-  },
-  {
-    id: 2,
-    name: 'USDT',
-    icon: 'https://movricons.s3.ap-south-1.amazonaws.com/Matic.svg',
-  },
-];
+interface IProps {
+  coins: Coin[];
+  value: Coin;
+  setValue: Function;
+}
 
-export default function CoinSelect() {
-  const [value, setValue] = useState();
-  const [icon, setIcon] = useState();
-
-  const selectedChain = (chain: any) => {
-    setValue(chain.name);
-    setIcon(chain.icon);
+export default function CoinSelect(params: IProps) {
+  const selectedChain = (coin: Coin) => {
+    params.setValue(coin);
   };
 
   return (
@@ -35,14 +26,14 @@ export default function CoinSelect() {
     >
       <div>
         <Menu.Button className="inline-flex h-10 w-full items-center justify-between rounded-r-md bg-gray-100 px-4 py-2 text-sm font-medium text-fetcch-dark shadow-sm hover:bg-gray-50 focus:outline-none">
-          {value ? (
+          {params.value ? (
             <div className="flex flex-row items-center">
               <img
-                src={icon}
+                src={params.value.icon}
                 alt="chain"
                 className="mr-3 shrink-0 rounded-md fill-current text-gray-400 group-hover:text-gray-500"
               />
-              <span className="mr-2 text-left">{value}</span>
+              <span className="mr-2 text-left">{params.value.name}</span>
             </div>
           ) : (
             <svg
@@ -68,7 +59,7 @@ export default function CoinSelect() {
         leaveTo="transform opacity-0 scale-95"
       >
         <Menu.Items className="absolute inset-x-0 z-10 mt-2 w-full divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-black/5 focus:outline-none">
-          {coins.map((chain: any) => (
+          {params.coins.map((chain: any) => (
             <div className="pt-1" key={chain.id}>
               <Menu.Item>
                 {({ active }: { active: any }) => (
