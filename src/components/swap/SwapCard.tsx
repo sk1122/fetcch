@@ -1,9 +1,12 @@
 import { Switch, Transition } from '@headlessui/react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useAccount } from 'wagmi';
 
+import { useBridge } from '@/hooks/useBridge';
 import { Swap } from '@/icons/swap';
 import type { Chain, Coin } from '@/types';
 
+import SwapButton from '../landing/SwapButton';
 import ChainSelect from './ChainSelect';
 import CoinSelect from './CoinSelect';
 import WalletConnect from './shared/WalletConnect';
@@ -69,16 +72,22 @@ const coins: { '1': Coin[]; '137': Coin[] } = {
 };
 
 const SwapCard = () => {
+  const { address } = useAccount();
+
   const [toggle, setToggle] = useState(true);
   const [fromChain, setFromChain] = useState(chainList[0] as Chain);
   const [toChain, setToChain] = useState(chainList[1] as Chain);
   const [fromChainList, setFromChainList] = useState([chainList[1]]);
   const [toChainList, setToChainList] = useState([chainList[0]]);
 
+  const { estimateFees } = useBridge();
+
   // @ts-ignore
   const [fromCoin, setFromCoin] = useState(coins[fromChain.chainId][0]);
   // @ts-ignore
   const [toCoin, setToCoin] = useState(coins[toChain.chainId][1]);
+  const [fromAmount, setFromAmount] = useState('');
+  const [toAmount, setToAmount] = useState('0.00');
 
   const changeFromChain = (value: Chain) => {
     if (toChain) {
@@ -120,6 +129,14 @@ const SwapCard = () => {
     setFromCoin(tCoin);
     setToCoin(fCoin);
   };
+
+  useEffect(() => {
+    if (fromCoin && toCoin && fromChain && toChain && fromAmount) {
+      estimateFees(fromCoin as Coin, toCoin as Coin, Number(fromAmount)).then(
+        (a) => setToAmount(a.amountOut.toString())
+      );
+    }
+  }, [fromCoin, toCoin, fromChain, toChain, fromAmount]);
 
   return (
     <section className="col-span-full flex w-full flex-col space-y-4 px-2 lg:col-span-3 lg:px-0">
@@ -170,6 +187,8 @@ const SwapCard = () => {
                 type="number"
                 name="amount"
                 id="amount"
+                value={fromAmount}
+                onChange={(e) => setFromAmount(e.target.value)}
                 className="block h-10 w-3/5 rounded-l-md border-none pl-7 text-black outline-none sm:text-sm"
                 placeholder="0.00"
               />
@@ -204,6 +223,7 @@ const SwapCard = () => {
                 type="number"
                 name="amount"
                 id="amount"
+                value={toAmount}
                 className="block h-10 w-3/5 rounded-l-md border-none bg-white pl-7 text-black outline-none sm:text-sm"
                 placeholder="0.00"
                 disabled
@@ -315,7 +335,12 @@ const SwapCard = () => {
           <ToggleOff />
         </Transition>
       )}
-      <WalletConnect />
+      {!address && <WalletConnect />}
+      {address && (
+        <div>
+          <SwapButton classes="w-40 px-6 py-2 text-base hidden md:flex" />
+        </div>
+      )}
     </section>
   );
 };

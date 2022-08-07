@@ -2,8 +2,9 @@ import { Disclosure } from '@headlessui/react';
 import { MenuIcon, XIcon } from '@heroicons/react/outline';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useAccount } from 'wagmi';
 
-import SwapButton from './landing/SwapButton';
+import WalletConnect from './swap/shared/WalletConnect';
 
 const navlinks = [
   { name: 'Developers', href: '/' },
@@ -12,6 +13,8 @@ const navlinks = [
 ];
 
 export default function Header() {
+  const { address } = useAccount();
+
   return (
     <Disclosure as="nav" className="bg-transparent py-4">
       {({ open }) => (
@@ -41,7 +44,8 @@ export default function Header() {
                         </a>
                       </Link>
                     ))}
-                    <SwapButton classes="px-6 py-2 text-base hidden md:flex" />
+                    {address && <WalletConnect />}
+                    {/* <SwapButton classes="px-6 py-2 text-base hidden md:flex" /> */}
                   </div>
                 </div>
               </div>
