@@ -1,10 +1,12 @@
 type Props = {
   fill?: string;
+  onClick?: any;
 };
 
 export function Swap(props: Props) {
   return (
     <svg
+      onClick={props.onClick}
       width="18"
       height="14"
       viewBox="0 0 28 24"

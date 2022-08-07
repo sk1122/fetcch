@@ -1,45 +1,36 @@
 import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/solid';
-import React, { Fragment, useState } from 'react';
+import React, { Fragment } from 'react';
+
+import type { Chain } from '@/types';
 
 function classNames(...classes: any) {
   return classes.filter(Boolean).join(' ');
 }
 
-const chainList = [
-  {
-    id: 1,
-    name: 'Ethereum',
-    icon: 'https://movricons.s3.ap-south-1.amazonaws.com/Ether.svg',
-  },
-  {
-    id: 2,
-    name: 'Polygon',
-    icon: 'https://movricons.s3.ap-south-1.amazonaws.com/Matic.svg',
-  },
-];
+interface IParams {
+  chain: Chain;
+  setChain: Function;
+  chainList: object[];
+}
 
-export default function ChainSelect() {
-  const [value, setValue] = useState();
-  const [icon, setIcon] = useState();
-
+export default function ChainSelect(params: IParams) {
   const selectedChain = (chain: any) => {
-    setValue(chain.name);
-    setIcon(chain.icon);
+    params.setChain(chain);
   };
 
   return (
     <Menu as="div" className="relative inline-block w-full text-left">
       <div>
         <Menu.Button className="inline-flex h-10 w-full items-center justify-between rounded-md bg-white px-4 py-2 text-sm font-medium text-fetcch-dark shadow-sm hover:bg-gray-50 focus:outline-none">
-          {value ? (
+          {params.chain ? (
             <div className="flex flex-row items-center">
               <img
-                src={icon}
+                src={params.chain.icon}
                 alt="chain"
                 className="mr-3 shrink-0 rounded-md fill-current text-gray-400 group-hover:text-gray-500"
               />
-              <span className="text-left">{value}</span>
+              <span className="text-left">{params.chain.name}</span>
             </div>
           ) : (
             <svg
@@ -65,7 +56,7 @@ export default function ChainSelect() {
         leaveTo="transform opacity-0 scale-95"
       >
         <Menu.Items className="absolute inset-x-0 z-10 mt-2 w-full divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-black/5 focus:outline-none">
-          {chainList.map((chain: any) => (
+          {params.chainList.map((chain: any) => (
             <div className="pt-1" key={chain.id}>
               <Menu.Item>
                 {({ active }: { active: any }) => (

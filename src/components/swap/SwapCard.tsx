@@ -2,6 +2,7 @@ import { Switch, Transition } from '@headlessui/react';
 import React, { useState } from 'react';
 
 import { Swap } from '@/icons/swap';
+import type { Chain } from '@/types';
 
 import ChainSelect from './ChainSelect';
 import CoinSelect from './CoinSelect';
@@ -13,8 +14,59 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
 }
 
+const chainList: Chain[] = [
+  {
+    id: 1,
+    name: 'Rinkeby (ETH)',
+    icon: 'https://movricons.s3.ap-south-1.amazonaws.com/Ether.svg',
+  },
+  {
+    id: 2,
+    name: 'Mumbai (POL)',
+    icon: 'https://movricons.s3.ap-south-1.amazonaws.com/Matic.svg',
+  },
+];
+
 const SwapCard = () => {
   const [toggle, setToggle] = useState(true);
+  const [fromChain, setFromChain] = useState(chainList[0] as Chain);
+  const [toChain, setToChain] = useState(chainList[1] as Chain);
+  const [fromChainList, setFromChainList] = useState([chainList[1]]);
+  const [toChainList, setToChainList] = useState([chainList[0]]);
+
+  const changeFromChain = (value: Chain) => {
+    if (toChain) {
+      if (value.name === toChain.name) {
+        setToChain(fromChain);
+      }
+
+      setFromChain(value);
+      setFromChainList(chainList.filter((v) => v.name !== value.name));
+      setToChainList(chainList.filter((v) => v.name === value.name));
+    }
+  };
+
+  const changeToChain = (value: Chain) => {
+    if (fromChain) {
+      if (value.name === fromChain.name) {
+        setFromChain(toChain);
+      }
+
+      setToChain(value);
+      setToChainList(chainList.filter((v) => v.name !== value.name));
+      setFromChainList(chainList.filter((v) => v.name === value.name));
+    }
+  };
+
+  const swapChain = () => {
+    const fChain = fromChain;
+    const tChain = toChain;
+    setFromChain(toChain);
+    setToChain(fChain);
+    setFromChainList(chainList.filter((v) => v.name !== tChain.name));
+    setToChainList(chainList.filter((v) => v.name !== fChain.name));
+  };
+
   return (
     <section className="col-span-full flex w-full flex-col space-y-4 px-2 lg:col-span-3 lg:px-0">
       {/* chain section */}
@@ -23,15 +75,23 @@ const SwapCard = () => {
         <div className="flex w-full justify-evenly space-x-3">
           <div className="w-1/2 rounded-md bg-fetcch-purple/5 p-2">
             <h3 className="mb-2 text-sm">Source Chain</h3>
-            <ChainSelect />
+            <ChainSelect
+              chain={fromChain}
+              setChain={changeFromChain}
+              chainList={fromChainList as Chain[]}
+            />
           </div>
           <div className="hidden md:mt-2 md:block">
-            <Swap fill="#7733FF" />
+            <Swap fill="#7733FF" onClick={() => swapChain()} />
           </div>
 
           <div className="w-1/2 rounded-md bg-fetcch-purple/5 p-2">
             <h3 className="mb-2 text-sm">Destination Chain</h3>
-            <ChainSelect />
+            <ChainSelect
+              chain={toChain}
+              setChain={changeToChain}
+              chainList={toChainList as Chain[]}
+            />
           </div>
         </div>
       </div>
@@ -56,7 +116,7 @@ const SwapCard = () => {
                 type="number"
                 name="amount"
                 id="amount"
-                className="block h-10 w-3/5 rounded-l-md border-none pl-7 outline-none sm:text-sm"
+                className="block h-10 w-3/5 rounded-l-md border-none pl-7 text-black outline-none sm:text-sm"
                 placeholder="0.00"
               />
 
@@ -86,7 +146,7 @@ const SwapCard = () => {
                 type="number"
                 name="amount"
                 id="amount"
-                className="block h-10 w-3/5 rounded-l-md border-none bg-white pl-7 outline-none sm:text-sm"
+                className="block h-10 w-3/5 rounded-l-md border-none bg-white pl-7 text-black outline-none sm:text-sm"
                 placeholder="0.00"
                 disabled
               />
