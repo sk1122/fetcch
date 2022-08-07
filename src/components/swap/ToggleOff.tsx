@@ -39,7 +39,7 @@ const ToggleOff = () => {
                   className={({ checked }) =>
                     classNames(
                       checked
-                        ? 'bg-fetcch-purple/5 border-fetcch-mustard z-10'
+                        ? 'bg-fetcch-purple/5 border-fetcch-purple dark:border-fetcch-mustard z-10'
                         : 'border-gray-200 dark:border-none',
                       'relative border-2 p-2 mb-3 dark:bg-fetcch-purple/20 rounded-md flex flex-col cursor-pointer focus:outline-none'
                     )
