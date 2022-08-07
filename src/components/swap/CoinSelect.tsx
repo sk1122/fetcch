@@ -25,7 +25,7 @@ export default function CoinSelect(params: IProps) {
       className="relative inline-block h-full w-full rounded-r-md border-none bg-transparent py-0 text-left text-gray-500"
     >
       <div>
-        <Menu.Button className="inline-flex h-10 w-full items-center justify-between rounded-r-md bg-gray-100 px-4 py-2 text-sm font-medium text-fetcch-dark shadow-sm hover:bg-gray-50 focus:outline-none">
+        <Menu.Button className="inline-flex h-10 w-full items-center justify-between rounded-r-md bg-gray-100 px-4 py-2 text-sm font-medium text-fetcch-dark shadow-sm hover:bg-gray-50 focus:outline-none dark:bg-fetcch-dark/40 dark:text-white">
           {params.value ? (
             <div className="flex flex-row items-center">
               <img
@@ -33,7 +33,9 @@ export default function CoinSelect(params: IProps) {
                 alt="chain"
                 className="mr-3 shrink-0 rounded-md fill-current text-gray-400 group-hover:text-gray-500"
               />
-              <span className="mr-2 text-left">{params.value.name}</span>
+              <span className="mr-2 text-left dark:text-white">
+                {params.value.name}
+              </span>
             </div>
           ) : (
             <svg
@@ -58,14 +60,16 @@ export default function CoinSelect(params: IProps) {
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items className="absolute inset-x-0 z-10 mt-2 w-full divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-black/5 focus:outline-none">
+        <Menu.Items className="absolute inset-x-0 z-10 mt-2 w-full divide-y divide-fetcch-purple/50 rounded-md bg-white shadow-lg ring-black/5 focus:outline-none dark:border-2 dark:border-fetcch-purple/30 dark:bg-fetcch-dark">
           {params.coins.map((chain: any) => (
             <div className="pt-1" key={chain.id}>
               <Menu.Item>
                 {({ active }: { active: any }) => (
                   <div
                     className={classNames(
-                      active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                      active
+                        ? 'bg-gray-100 dark:bg-fetcch-purple/20 rounded-b-md dark:text-fetcch-mustard text-gray-900'
+                        : 'text-gray-700 dark:text-white',
                       'group flex items-center px-4 py-2 text-sm cursor-pointer'
                     )}
                     onClick={() => selectedChain(chain)}

@@ -1,4 +1,4 @@
-import { Switch, Transition } from '@headlessui/react';
+import { Switch } from '@headlessui/react';
 import React, { useEffect, useState } from 'react';
 import { useAccount } from 'wagmi';
 
@@ -144,7 +144,7 @@ const SwapCard = () => {
       <h1 className="pl-2 text-lg font-bold">Currency Swap</h1>
       <div className="w-full rounded-md">
         <div className="flex w-full justify-evenly space-x-3">
-          <div className="w-1/2 rounded-md bg-fetcch-purple/5 p-2">
+          <div className="w-1/2 rounded-md bg-fetcch-purple/5 p-2 dark:bg-fetcch-purple/20">
             <h3 className="mb-2 text-sm">Source Chain</h3>
             <ChainSelect
               chain={fromChain}
@@ -156,7 +156,7 @@ const SwapCard = () => {
             <Swap fill="#7733FF" onClick={() => swapChain()} />
           </div>
 
-          <div className="w-1/2 rounded-md bg-fetcch-purple/5 p-2">
+          <div className="w-1/2 rounded-md bg-fetcch-purple/5 p-2 dark:bg-fetcch-purple/20">
             <h3 className="mb-2 text-sm">Destination Chain</h3>
             <ChainSelect
               chain={toChain}
@@ -170,7 +170,7 @@ const SwapCard = () => {
       {/* coin section */}
       <h2 className="pl-2 font-semibold">Selected Tokens</h2>
       <div className="flex w-full flex-col justify-evenly space-y-6 space-x-0 md:flex-row md:space-y-0 md:space-x-3">
-        <div className="w-full rounded-md bg-fetcch-purple/5 p-2 md:w-1/2">
+        <div className="w-full rounded-md bg-fetcch-purple/5 p-2 dark:bg-fetcch-purple/20 md:w-1/2">
           <label
             htmlFor="sender"
             className="mb-2 block text-left text-sm text-black dark:text-white"
@@ -189,11 +189,11 @@ const SwapCard = () => {
                 id="amount"
                 value={fromAmount}
                 onChange={(e) => setFromAmount(e.target.value)}
-                className="block h-10 w-3/5 rounded-l-md border-none pl-7 text-black outline-none sm:text-sm"
+                className="h-10 w-3/5 rounded-l-md border-none pl-7 text-black outline-none dark:bg-fetcch-dark/50 dark:text-white sm:text-sm"
                 placeholder="0.00"
               />
 
-              <div className="absolute inset-y-0 right-0 flex w-2/5 items-center rounded-r-md bg-white ">
+              <div className="absolute inset-y-0 right-0 flex w-2/5 items-center rounded-r-md bg-white dark:bg-fetcch-dark/50">
                 <span className="pr-2 text-xs font-semibold text-fetcch-purple underline underline-offset-1">
                   MAX
                 </span>
@@ -207,10 +207,10 @@ const SwapCard = () => {
           </div>
         </div>
 
-        <div className="w-full rounded-md bg-fetcch-purple/5 p-2 md:w-1/2">
+        <div className="w-full rounded-md bg-fetcch-purple/5 p-2 dark:bg-fetcch-purple/20 md:w-1/2">
           <label
-            htmlFor="sender"
-            className="mb-2 block text-left text-sm text-black dark:text-white"
+            htmlFor="receiver"
+            className="mb-2 block text-left text-sm text-black  dark:text-white"
           >
             You Receive
           </label>
@@ -223,12 +223,12 @@ const SwapCard = () => {
                 type="number"
                 name="amount"
                 id="amount"
-                value={toAmount}
-                className="block h-10 w-3/5 rounded-l-md border-none bg-white pl-7 text-black outline-none sm:text-sm"
+                value={fromAmount === '' ? '' : toAmount}
+                className="h-10 w-3/5 rounded-l-md border-none bg-white pl-7 text-black outline-none dark:bg-fetcch-dark/50 dark:text-white sm:text-sm"
                 placeholder="0.00"
                 disabled
               />
-              <div className="absolute inset-y-0 right-0 flex w-2/5 items-center rounded-r-md bg-white">
+              <div className="absolute inset-y-0 right-0 flex w-2/5 items-center rounded-r-md bg-white dark:bg-fetcch-dark/50">
                 <span className="pr-2 text-xs font-semibold text-fetcch-purple underline underline-offset-1">
                   MAX
                 </span>
@@ -252,15 +252,14 @@ const SwapCard = () => {
           checked={toggle}
           onChange={setToggle}
           className={classNames(
-            toggle ? 'bg-fetcch-purple' : 'bg-gray-200',
-            'relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none'
+            toggle ? 'bg-fetcch-purple' : 'bg-gray-200 dark:bg-gray-700',
+            'relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-500 focus:outline-none'
           )}
         >
-          <span className="sr-only">Use setting</span>
           <span
             className={classNames(
-              toggle ? 'translate-x-5' : 'translate-x-0',
-              'pointer-events-none relative inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200'
+              toggle ? 'translate-x-5 dark:bg-white' : 'translate-x-0',
+              'pointer-events-none relative inline-block h-5 w-5 rounded-full bg-white dark:bg-gray-300 shadow transform ring-0 transition ease-in-out duration-500'
             )}
           >
             <span
@@ -268,12 +267,12 @@ const SwapCard = () => {
                 toggle
                   ? 'opacity-0 ease-out duration-100'
                   : 'opacity-100 ease-in duration-200',
-                'absolute inset-0 h-full w-full flex items-center justify-center transition-opacity'
+                'transform ease-in-out duration-500 absolute inset-0 h-full w-full flex items-center justify-center transition-opacity'
               )}
               aria-hidden="true"
             >
               <svg
-                className="h-3 w-3 text-gray-400"
+                className="h-3 w-3 text-gray-400 dark:text-black"
                 fill="none"
                 viewBox="0 0 12 12"
               >
@@ -308,33 +307,7 @@ const SwapCard = () => {
       </div>
 
       {/* section #4 */}
-      {toggle ? (
-        <Transition
-          show={toggle}
-          appear={true}
-          enter="transition ease-out duration-500"
-          enterFrom="opacity-0 -translate-y-1"
-          enterTo="opacity-100 translate-y-0"
-          leave="transition ease-in duration-500"
-          leaveFrom="opacity-100 translate-y-0"
-          leaveTo="opacity-0 -translate-y-1"
-        >
-          <ToggleOn />
-        </Transition>
-      ) : (
-        <Transition
-          show={!toggle}
-          appear={true}
-          enter="transition ease-out duration-500"
-          enterFrom="opacity-0 -translate-y-1"
-          enterTo="opacity-100 translate-y-0"
-          leave="transition ease-in duration-500"
-          leaveFrom="opacity-100 translate-y-0"
-          leaveTo="opacity-0 -translate-y-1"
-        >
-          <ToggleOff />
-        </Transition>
-      )}
+      {toggle ? <ToggleOn /> : <ToggleOff />}
       {!address && <WalletConnect />}
       {address && (
         <div>

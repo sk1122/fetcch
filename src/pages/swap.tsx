@@ -15,7 +15,7 @@ const swap = () => {
         />
       }
     >
-      <div className="h-full w-full bg-gradient-to-r from-[#EADFFF] to-[#FFECD3]">
+      <div className="h-full w-full bg-gradient-to-r from-[#EADFFF] to-[#FFECD3] dark:bg-gradient-to-r dark:from-fetcch-dark dark:to-fetcch-dark/10">
         <Header />
         <Swap />
       </div>

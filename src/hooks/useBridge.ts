@@ -37,7 +37,7 @@ export const useBridge = () => {
       fees.amountOut -= point3Percent;
     }
 
-    console.log(fees);
+    // console.log(fees);
 
     return fees;
   };
