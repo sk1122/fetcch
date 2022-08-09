@@ -144,7 +144,7 @@ const SwapCard = () => {
     }
   }, [fromCoin, toCoin, fromChain, toChain, fromAmount]);
 
-	const { data: signer, isError, isLoading } = useSigner();
+	const { data: signer } = useSigner();
 
 	const swap = async () => {
 		if(signer && fromCoin && toCoin) {
