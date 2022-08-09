@@ -58,6 +58,7 @@ export const useBridge = () => {
 					'0xd9b4bCCD76E4c35AFa4b473af723fBb19B3E65e8',
 					amount
 				)
+				console.log(approveTx)
 			}
 
 			const contract = new ethers.Contract('0xd9b4bCCD76E4c35AFa4b473af723fBb19B3E65e8', abi, signer)
