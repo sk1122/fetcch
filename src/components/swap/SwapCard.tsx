@@ -82,7 +82,7 @@ const SwapCard = () => {
   const [toggle2, setToggle2] = useState(true);
   const [fromChain, setFromChain] = useState(chainList[0] as Chain);
   const [toChain, setToChain] = useState(chainList[1] as Chain);
-  const [receiver, setReceiver] = useState('	');
+  const [receiver, setReceiver] = useState('');
   const [fromChainList, setFromChainList] = useState([chainList[1]]);
   const [toChainList, setToChainList] = useState([chainList[0]]);
 
@@ -92,7 +92,7 @@ const SwapCard = () => {
   const [fromCoin, setFromCoin] = useState(coins[fromChain.chainId][0]);
   // @ts-ignore
   const [toCoin, setToCoin] = useState(coins[toChain.chainId][1]);
-  const [fromAmount, setFromAmount] = useState();
+  const [fromAmount, setFromAmount] = useState('');
   const [toAmount, setToAmount] = useState('0.00');
 
   const changeFromChain = (value: Chain) => {
