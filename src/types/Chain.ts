@@ -1,4 +1,4 @@
-type ChainId = '1' | '137';
+type ChainId = '4' | '80001';
 
 export interface Chain {
   id: number;

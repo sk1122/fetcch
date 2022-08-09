@@ -5,4 +5,5 @@ export interface Coin {
   address: any;
   decimals: number;
   chainId: string;
+	lchainId: number
 }
