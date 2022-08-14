@@ -92,18 +92,32 @@ export const useBridge = () => {
     };
 
     if (fromChainDexRequired) {
-      const point3Percent = amount * 0.003;
+			let point3Percent = amount;
+			if (fromToken.name.startsWith('USD') || (fromToken.name.startsWith('W') && toToken.name.startsWith('W'))) {
+				point3Percent = amount * 0.003;
+				fees.fees += point3Percent;
+				fees.amountOut -= point3Percent;
+			} else {
+				point3Percent = (amount*1000) * 0.003;
+				fees.fees += point3Percent;
+				fees.amountOut = (amount * 1000) - point3Percent;
+				console.log((amount * 1000))
+			}
 
-      fees.fees += point3Percent;
-      fees.amountOut -= point3Percent;
     }
 
     if (toChainDexRequired) {
-      const point3Percent = (amount / 1000) * 0.003;
-			console.log(point3Percent, amount / 1000)
+			let point3Percent = amount;
+			if (fromToken.name.startsWith('USD') || (fromToken.name.startsWith('W') && toToken.name.startsWith('W'))) {
+				point3Percent = amount * 0.003;
+				fees.fees += point3Percent;
+				fees.amountOut = amount - point3Percent;
+			} else {
+				fees.fees += point3Percent;
+				fees.amountOut = (amount / 1000) - point3Percent;
+				point3Percent = (amount / 1000) * 0.003;
+			}
 
-      fees.fees += point3Percent;
-      fees.amountOut = (amount / 1000) - point3Percent;
     }
 
     console.log(fees);
