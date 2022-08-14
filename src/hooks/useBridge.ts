@@ -10,7 +10,7 @@ interface Return {
 const abi = [{ "inputs": [{ "internalType": "address", "name": "_pool", "type": "address" }, { "internalType": "address", "name": "_dex", "type": "address" }, { "internalType": "address", "name": "_dst", "type": "address" }], "stateMutability": "nonpayable", "type": "constructor" }, { "inputs": [], "name": "destination", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "dex", "outputs": [{ "internalType": "contract UniV2Provider", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "pool", "outputs": [{ "internalType": "contract FetcchPool", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "components": [{ "components": [{ "internalType": "address", "name": "_fromToken", "type": "address" }, { "internalType": "address", "name": "_toToken", "type": "address" }, { "internalType": "uint256", "name": "_amount", "type": "uint256" }, { "internalType": "bool", "name": "dexRequired", "type": "bool" }, { "internalType": "uint256", "name": "_amountOut", "type": "uint256" }], "internalType": "struct FetcchBridge.fromChainData", "name": "_fromChain", "type": "tuple" }, { "components": [{ "internalType": "address", "name": "_fromToken", "type": "address" }, { "internalType": "address", "name": "_toToken", "type": "address" }, { "internalType": "uint256", "name": "_amount", "type": "uint256" }, { "internalType": "bool", "name": "dexRequired", "type": "bool" }], "internalType": "struct FetcchBridge.toChainData", "name": "_toChain", "type": "tuple" }, { "internalType": "address", "name": "_receiver", "type": "address" }, { "internalType": "uint16", "name": "_toChainID", "type": "uint16" }], "internalType": "struct FetcchBridge.swapData", "name": "_swapData", "type": "tuple" }], "name": "swap", "outputs": [], "stateMutability": "payable", "type": "function" }]
 
 export const useBridge = () => {
-  const bridgeTokens: any = [];
+  const bridgeTokens: any = ["USDC", "USDT"];
 
 	const swapFunds = async (from_token: Coin, to_token: Coin, amount: string, amountOut: string, receiver: string, signer: ethers.Signer) => {
 		try {
@@ -84,6 +84,8 @@ export const useBridge = () => {
     if (!bridgeTokens.includes(fromToken.name)) fromChainDexRequired = true;
     if (!bridgeTokens.includes(toToken.name)) toChainDexRequired = true;
 
+		console.log(fromChainDexRequired, toChainDexRequired)
+
     const fees: Return = {
       fees: 0,
       amountOut: amount,
@@ -97,9 +99,11 @@ export const useBridge = () => {
     }
 
     if (toChainDexRequired) {
-      const point3Percent = amount * 0.003;
+      const point3Percent = (amount / 1000) * 0.003;
+			console.log(point3Percent, amount / 1000)
+
       fees.fees += point3Percent;
-      fees.amountOut -= point3Percent;
+      fees.amountOut = (amount / 1000) - point3Percent;
     }
 
     console.log(fees);
