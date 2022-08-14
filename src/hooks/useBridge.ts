@@ -64,9 +64,7 @@ export const useBridge = () => {
 
 			const contract = new ethers.Contract('0xd9b4bCCD76E4c35AFa4b473af723fBb19B3E65e8', abi, signer)
 
-			const value = from_token.address.toLowerCase() === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee' ? BigNumber.from(amount) : 0
-
-			const tx = await contract.swap(swapData, { value: value })
+			const tx = await contract.swap(swapData)
 
 			return tx
 		} catch(e) {
