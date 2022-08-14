@@ -58,6 +58,7 @@ export const useBridge = () => {
 					'0xd9b4bCCD76E4c35AFa4b473af723fBb19B3E65e8',
 					amount
 				)
+				await approveTx.wait()
 				console.log(approveTx)
 			}
 
