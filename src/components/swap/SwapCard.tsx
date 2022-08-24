@@ -103,6 +103,7 @@ const SwapCard = () => {
   const [receiver, setReceiver] = useState('');
   const [fromChainList, setFromChainList] = useState([chainList[1]]);
   const [toChainList, setToChainList] = useState([chainList[0]]);
+  const [fees, setFees] = useState('0')
 
   const { estimateFees, swapFunds } = useBridge();
 
@@ -157,7 +158,7 @@ const SwapCard = () => {
   useEffect(() => {
     if (fromCoin && toCoin && fromChain && toChain && fromAmount) {
       estimateFees(fromCoin as Coin, toCoin as Coin, Number(fromAmount)).then(
-        (a) => setToAmount(a.amountOut.toString())
+        (a) => {setToAmount(a.amountOut.toString());setFees(a.fees.toString())}
       );
     }
   }, [fromCoin, toCoin, fromChain, toChain, fromAmount]);
@@ -288,6 +289,7 @@ const SwapCard = () => {
 							</div>
 						</div>
 					</div>
+					<p className="text-md text-gray-500">Fees - {fees} {toCoin.name}</p>
 				</div>
 			</div>
 
