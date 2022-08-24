@@ -289,7 +289,7 @@ const SwapCard = () => {
 							</div>
 						</div>
 					</div>
-					<p className="text-md text-gray-500">Fees - {fees} {toCoin.name}</p>
+					<p className="text-md text-gray-500">Fees - {fees} {toCoin?.name}</p>
 				</div>
 			</div>
 
