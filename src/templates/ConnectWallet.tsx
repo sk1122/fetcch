@@ -12,8 +12,20 @@ import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
 
 const { chains, provider } = configureChains(
-  [chain.rinkeby, chain.polygonMumbai],
-  [alchemyProvider({ apiKey: '' }), publicProvider()]
+	[
+		chain.rinkeby,
+		chain.polygonMumbai,
+		{
+			id: 97,
+			name: "BNB",
+			network: "bsc",
+			rpcUrls: {
+				public: "https://data-seed-prebsc-1-s1.binance.org:8545/",
+				default: "https://data-seed-prebsc-1-s1.binance.org:8545/",
+			},
+		},
+	],
+	[alchemyProvider({ apiKey: "" }), publicProvider()]
 );
 
 const { connectors } = getDefaultWallets({

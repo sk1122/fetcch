@@ -1,6 +1,6 @@
 import { Switch, Transition } from '@headlessui/react';
 import React, { useEffect, useState } from 'react';
-import { useAccount, useSigner } from 'wagmi';
+import { chain, useAccount, useSigner } from 'wagmi';
 
 import { useBridge } from '@/hooks/useBridge';
 import { Swap } from '@/icons/swap';
@@ -18,27 +18,33 @@ function classNames(...classes: string[]) {
 }
 
 const chainList: Chain[] = [
-  {
-    id: 1,
-    name: 'Rinkeby (ETH)',
-    icon: 'https://movricons.s3.ap-south-1.amazonaws.com/Ether.svg',
-    chainId: '4',
-  },
-  {
-    id: 2,
-    name: 'Mumbai (POL)',
-    icon: 'https://movricons.s3.ap-south-1.amazonaws.com/Matic.svg',
-    chainId: '80001',
-  },
+	{
+		id: 1,
+		name: "Rinkeby (ETH)",
+		icon: "https://movricons.s3.ap-south-1.amazonaws.com/Ether.svg",
+		chainId: "4",
+	},
+	{
+		id: 2,
+		name: "Mumbai (POL)",
+		icon: "https://movricons.s3.ap-south-1.amazonaws.com/Matic.svg",
+		chainId: "80001",
+	},
+	{
+		id: 3,
+		name: "BSC (BSC)",
+		icon: "https://movricons.s3.ap-south-1.amazonaws.com/Matic.svg",
+		chainId: "97",
+	},
 ];
 
-export const coins: { "4": Coin[]; "80001": Coin[] } = {
+export const coins: { "4": Coin[]; "80001": Coin[]; "97": Coin[] } = {
 	"4": [
 		{
 			id: 1,
 			name: "USDC",
 			icon: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-			address: "0xd3AfdA70B888388a1d5e8737Ba8b533fFE352e92",
+			address: "0x46A5E25dFcC722EC214822d349A2337B941fD2D6",
 			decimals: 18,
 			chainId: "10001",
 			lchainId: 4,
@@ -47,7 +53,7 @@ export const coins: { "4": Coin[]; "80001": Coin[] } = {
 			id: 2,
 			name: "USDT",
 			icon: "https://assets.coingecko.com/coins/images/325/thumb/Tether-logo.png?1598003707",
-			address: "0x28484dF284De386A00b025998B0dE5ED1af63e1A",
+			address: "0x762cC946f794E41E449af708D740D90C643538D9",
 			decimals: 18,
 			chainId: "10001",
 			lchainId: 4,
@@ -56,7 +62,7 @@ export const coins: { "4": Coin[]; "80001": Coin[] } = {
 			id: 3,
 			name: "WETH",
 			icon: "https://assets.coingecko.com/coins/images/2518/thumb/weth.png?1628852295",
-			address: "0x60091A457EBbb78d4054aA49502ED3150722228F",
+			address: "0x807f0dA036041932CbFF0621220e1B6041306324",
 			decimals: 18,
 			chainId: "10001",
 			lchainId: 4,
@@ -67,7 +73,7 @@ export const coins: { "4": Coin[]; "80001": Coin[] } = {
 			id: 1,
 			name: "USDC",
 			icon: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
-			address: "0x09b93456Ea3799fC88e4afD4D9cCCA11F032520d",
+			address: "0xE313ce03ca26F4AFb3F81160Cd6E3BDA1373981E",
 			decimals: 18,
 			chainId: "10009",
 			lchainId: 80001,
@@ -76,7 +82,7 @@ export const coins: { "4": Coin[]; "80001": Coin[] } = {
 			id: 2,
 			name: "USDT",
 			icon: "https://assets.coingecko.com/coins/images/325/thumb/Tether-logo.png?1598003707",
-			address: "0xd3AfdA70B888388a1d5e8737Ba8b533fFE352e92",
+			address: "0x925e9A45C2B576D6AE81d0C4fD57241c7B7364Ed",
 			decimals: 18,
 			chainId: "10009",
 			lchainId: 80001,
@@ -85,10 +91,39 @@ export const coins: { "4": Coin[]; "80001": Coin[] } = {
 			id: 3,
 			name: "WMATIC",
 			icon: "https://assets.coingecko.com/coins/images/4713/thumb/matic-token-icon.png?1624446912",
-			address: "0x60091A457EBbb78d4054aA49502ED3150722228F",
+			address: "0x6a8a0dE766c25F03c670F33615a13D0F35E9eB6d",
 			decimals: 18,
 			chainId: "10001",
-			lchainId: 4,
+			lchainId: 80001,
+		},
+	],
+	"97": [
+		{
+			id: 1,
+			name: "USDC",
+			icon: "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389",
+			address: "0x85845CC1013866e91627d7F4F7A1e82e122D0c3C",
+			decimals: 18,
+			chainId: "10002",
+			lchainId: 97,
+		},
+		{
+			id: 2,
+			name: "USDT",
+			icon: "https://assets.coingecko.com/coins/images/325/thumb/Tether-logo.png?1598003707",
+			address: "0x0F1B31723aB54D45aFd80D94542677881d524d8F",
+			decimals: 18,
+			chainId: "10002",
+			lchainId: 97,
+		},
+		{
+			id: 3,
+			name: "WMATIC",
+			icon: "https://assets.coingecko.com/coins/images/4713/thumb/matic-token-icon.png?1624446912",
+			address: "0xeF152994f26AA4279c18EEFB1e06096a3C57B44C",
+			decimals: 18,
+			chainId: "10002",
+			lchainId: 97,
 		},
 	],
 };
@@ -101,8 +136,10 @@ const SwapCard = () => {
   const [fromChain, setFromChain] = useState(chainList[0] as Chain);
   const [toChain, setToChain] = useState(chainList[1] as Chain);
   const [receiver, setReceiver] = useState('');
-  const [fromChainList, setFromChainList] = useState([chainList[1]]);
-  const [toChainList, setToChainList] = useState([chainList[0]]);
+  const [fromChainList, setFromChainList] = useState(chainList.filter(chain => chain.name !== fromChain.name));
+  const [toChainList, setToChainList] = useState(
+		chainList.filter((chain) => chain.name !== toChain.name)
+  );
   const [fees, setFees] = useState('0')
 
   const { estimateFees, swapFunds } = useBridge();
@@ -116,25 +153,27 @@ const SwapCard = () => {
 
   const changeFromChain = (value: Chain) => {
     if (toChain) {
-      if (value.name === toChain.name) {
-        setToChain(fromChain);
+      let val: Chain = fromChain
+			if (value.name === toChain.name) {
+				setToChain(fromChain);
       }
 
       setFromChain(value);
       setFromChainList(chainList.filter((v) => v.name !== value.name));
-      setToChainList(chainList.filter((v) => v.name === value.name));
+      setToChainList(chainList.filter((v) => v.name !== val.name));
     }
   };
 
   const changeToChain = (value: Chain) => {
     if (fromChain) {
-      if (value.name === fromChain.name) {
+      let val = toChain
+			if (value.name === fromChain.name) {
         setFromChain(toChain);
       }
 
       setToChain(value);
       setToChainList(chainList.filter((v) => v.name !== value.name));
-      setFromChainList(chainList.filter((v) => v.name === value.name));
+      setFromChainList(chainList.filter((v) => v.name !== val.name));
     }
   };
 
@@ -168,6 +207,7 @@ const SwapCard = () => {
 	const swap = async () => {
 		if(signer && fromCoin && toCoin) {
 			const chainId = await signer.getChainId()
+			console.log(chainId, fromCoin.lchainId);
 			if(chainId !== fromCoin.lchainId) {
 				alert("from chain is not same as connect chain")
 				return

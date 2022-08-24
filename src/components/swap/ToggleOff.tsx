@@ -19,7 +19,7 @@ const ToggleOff = () => {
   // useEffect(() => console.log(selected), [selected]);
   return (
     <div className="no-scrollbar max-h-[480px] min-h-fit w-full overflow-y-scroll overscroll-auto rounded-md bg-fetcch-purple/5 p-2">
-      <div className="mb-2 rounded-md border-[1px] border-gray-200 bg-white p-2">
+      <div className="mb-2 rounded-md border-[1px] text-black border-gray-200 bg-white p-2">
         <RadioGroup value={selected} onChange={setSelected}>
           <div className="-space-y-px rounded-md bg-white">
             {bridges.map((bridge) => (
