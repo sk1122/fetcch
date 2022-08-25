@@ -1,6 +1,5 @@
-import { coins } from '@/components/swap/SwapCard';
 import type { Coin } from '@/types';
-import { BigNumber, ethers } from 'ethers';
+import { ethers } from 'ethers';
 
 interface Return {
   fees: number;
@@ -14,33 +13,34 @@ export const useBridge = () => {
 
 	const swapFunds = async (from_token: Coin, to_token: Coin, amount: string, amountOut: string, receiver: string, signer: ethers.Signer) => {
 		try {
+			console.log(to_token, amountOut, receiver)
 			amount = ethers.utils.parseUnits(amount, from_token.decimals).toString()
-			const fromDexRequired = from_token.name.startsWith('USD')
-			const toDexRequired = to_token.name.startsWith('USD')
+			// const fromDexRequired = from_token.name.startsWith('USD')
+			// const toDexRequired = to_token.name.startsWith('USD')
 			
-			const fromChainData = [
-				from_token.address,
-				// @ts-ignore
-				coins[from_token.lchainId.toString()][0].address,
-				BigNumber.from(amount),
-				fromDexRequired,
-				BigNumber.from(amountOut)
-			]
+			// const fromChainData = [
+			// 	from_token.address,
+			// 	// @ts-ignore
+			// 	coins[from_token.lchainId.toString()][0].address,
+			// 	BigNumber.from(amount),
+			// 	fromDexRequired,
+			// 	BigNumber.from(amountOut)
+			// ]
 			
-			const toChainData = [
-				// @ts-ignore
-				coins[to_token.lchainId.toString()][0].address,
-				to_token.address,
-				BigNumber.from(amountOut),
-				toDexRequired
-			]
+			// const toChainData = [
+			// 	// @ts-ignore
+			// 	coins[to_token.lchainId.toString()][0].address,
+			// 	to_token.address,
+			// 	BigNumber.from(amountOut),
+			// 	toDexRequired
+			// ]
 
-			const swapData = [
-				fromChainData,
-				toChainData,
-				receiver,
-				to_token.chainId
-			]
+			// const swapData = [
+			// 	fromChainData,
+			// 	toChainData,
+			// 	receiver,
+			// 	to_token.chainId
+			// ]
 
 			if (from_token.address.toLowerCase !== '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee') {
 				const ERC20abi = [

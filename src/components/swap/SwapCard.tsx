@@ -1,6 +1,6 @@
 import { Switch, Transition } from '@headlessui/react';
 import React, { useEffect, useState } from 'react';
-import { chain, useAccount, useSigner } from 'wagmi';
+import { useAccount, useSigner } from 'wagmi';
 
 import { useBridge } from '@/hooks/useBridge';
 import { Swap } from '@/icons/swap';
