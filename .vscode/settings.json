@@ -15,5 +15,8 @@
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "workbench.layoutControl.type": "menu"
+  "workbench.layoutControl.type": "menu",
+  "[postcss]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }
