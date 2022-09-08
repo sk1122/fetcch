@@ -12,10 +12,21 @@ import { ethers } from 'ethers';
 
 import { getChains, getTokens } from "fetcch-chain-data";
 import type {Chain} from "fetcch-chain-data";
+import TokenListComp from '../tokenlist';
 
 const chainList: Chain[] = [...getChains()];
 
 export const coins: any = getTokens()
+
+
+export interface TokenInterface {
+  address: string;
+  chainId: number;
+  name: string;
+  symbol: string;
+  decimals: number;
+  logoURI: string;
+}
 
 const SwapCard = () => {
   const { address } = useAccount();
@@ -37,6 +48,8 @@ const SwapCard = () => {
   const [toCoin, setToCoin] = useState(coins[toChain.internalId][1]);
   const [fromAmount, setFromAmount] = useState('');
   const [toAmount, setToAmount] = useState('0.00');
+  const [showTokenList, setShowTokenList] = useState(false)
+  const [tokenValue, setTokenValue] = useState('from')
 
   const changeFromChain = (value: Chain) => {
     if (toChain) {
@@ -174,7 +187,10 @@ const SwapCard = () => {
 								<CoinSelect
 									value={fromCoin as any}
 									setValue={setFromCoin}
-									coins={coins[fromChain.internalId]}
+                  tokenValue="from"
+                  setShowTokenList={setShowTokenList}
+                  showTokenList={showTokenList}
+                  setTokenValue={setTokenValue}
 								/>
 							</div>
 						</div>
@@ -208,10 +224,13 @@ const SwapCard = () => {
 								<span className="pr-2 text-xs font-semibold text-fetcch-purple underline underline-offset-1">
 									MAX
 								</span>
-								<CoinSelect
+									<CoinSelect
 									value={toCoin as any}
 									setValue={setToCoin}
-									coins={coins[toChain.internalId]}
+                  tokenValue="to"
+                  setShowTokenList={setShowTokenList}
+                  showTokenList={showTokenList}
+                  setTokenValue={setTokenValue}
 								/>
 							</div>
 						</div>
@@ -254,7 +273,12 @@ const SwapCard = () => {
 					<Swap />
 				</div>
 			)}
+      {
+
+      showTokenList && <TokenListComp toChain={toChain} fromChain={fromChain} setFromCoin={setFromCoin} setToCoin={setToCoin} setShowTokenList={setShowTokenList} showTokenList={showTokenList} tokenValue={tokenValue}  />
+      }
 		</section>
+    
   );
 };
 
