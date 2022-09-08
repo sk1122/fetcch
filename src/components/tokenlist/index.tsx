@@ -30,7 +30,7 @@ const TokenListComp = ({ tokenValue, setShowTokenList, setFromCoin, setToCoin, s
   return (
     <>
       <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-fetcch-purple bg-opacity-30 outline-none focus:outline-none">
-        <div className="no-scrollbar relative my-6 mx-auto  max-h-[800px] w-[450px] max-w-5xl overflow-auto   bg-fetcch-purple ">
+        <div className="no-scrollbar rounded-xl relative my-6 mx-auto  max-h-[800px] w-[450px] max-w-5xl overflow-auto   bg-fetcch-purple ">
           {/* content */}
           <div className="relative flex w-full flex-col overflow-hidden rounded-lg border-0  bg-fetcch-dark/10 px-5 text-white shadow-lg outline-none focus:outline-none ">
             <div className="sticky top-0 z-40 mt-5 flex items-center justify-between rounded-t  ">
@@ -44,10 +44,10 @@ const TokenListComp = ({ tokenValue, setShowTokenList, setFromCoin, setToCoin, s
                     <IoMdArrowBack className="text-lg" />
                   </button>
 
-                  <h3 className="text-xl font-semibold">select token</h3>
+                  <h3 className="text-xl font-semibold">Select token</h3>
                 </>
               ) : (
-                <h3 className="text-xl font-semibold">mangae token</h3>
+                <h3 className="text-xl font-semibold">Manage Tokens</h3>
               )}
               <div>
                 <button

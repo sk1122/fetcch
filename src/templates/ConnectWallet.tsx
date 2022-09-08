@@ -13,15 +13,17 @@ import { publicProvider } from 'wagmi/providers/public';
 
 const { chains, provider } = configureChains(
 	[
-		chain.rinkeby,
-		chain.polygonMumbai,
+		chain.polygon,
+    chain.mainnet,
+    chain.optimism,
+    chain.arbitrum,
 		{
-			id: 97,
+			id: 56,
 			name: "BNB",
 			network: "bsc",
 			rpcUrls: {
-				public: "https://data-seed-prebsc-1-s1.binance.org:8545/",
-				default: "https://data-seed-prebsc-1-s1.binance.org:8545/",
+				public: "https://bsc-dataseed1.binance.org/",
+				default: "https://bsc-dataseed1.binance.org/",
 			},
 		},
 	],

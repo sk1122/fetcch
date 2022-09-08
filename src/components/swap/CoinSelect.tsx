@@ -38,7 +38,8 @@ export default function CoinSelect({value, setValue, setTokenValue, tokenValue, 
                 className="mr-3 h-8 w-8 shrink-0 rounded-md fill-current text-gray-400 group-hover:text-gray-500"
               />
               <span className="mr-2 text-left dark:text-white">
-                {value.name}
+                {value.name.length > 5 && value.name.substring(0, 5) + '...'}
+                {value.name.length <= 5 && value.name}
               </span>
             </div>
           ) : (

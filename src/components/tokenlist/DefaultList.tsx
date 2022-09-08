@@ -2,7 +2,7 @@ import { Chain } from 'fetcch-chain-data';
 import { useEffect, useState } from 'react';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { TokenInterface } from '../swap/SwapCard';
-
+import { getTokenByName } from 'fetcch-chain-data'
 
 
 import Token from './token';
@@ -20,30 +20,11 @@ interface Props {
   setTokens: Function
 }
 
-export const defaultTokens: TokenInterface[] = [
-  {
-    address: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
-    chainId: 1,
-    name: 'TetherUSD',
-    symbol: 'USDT',
-    decimals: 6,
-    logoURI:
-      'https://tokens.1inch.io/0xdac17f958d2ee523a2206206994597c13d831ec7.png',
-  },
-  {
-    address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-    chainId: 1,
-    name: 'USDCoin',
-    symbol: 'USDC',
-    decimals: 6,
-    logoURI:
-      'https://tokens.1inch.io/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png',
-  },
-];
-
 const DefaultTokenList = ({ tokens, tokenValue, setFromCoin, setToCoin, setShowTokenList, showTokenList, toChain, fromChain, setTokens }: Props) => {
   const [searchToken, setSearchToken] = useState<string>('');
   const [tokenOnScrenIndex, setTokenOnScreenIndex] = useState(10);
+  const [defaultTokens, setDefaultTokens] = useState(fromChain.internalId === 3 ? [getTokenByName('BUSD', '3'), getTokenByName('WBNB', '3')] : [getTokenByName('USDT', fromChain.internalId.toString()), getTokenByName('USDC', fromChain.internalId.toString())])
+  const [defaultToTokens, setDefaultToTokens] = useState(toChain.internalId === 3 ? [getTokenByName('BUSD', '3'), getTokenByName('WBNB', '3')] : [getTokenByName('USDT', fromChain.internalId.toString()), getTokenByName('USDC', fromChain.internalId.toString())])
 
   useEffect(() => {
     if(tokenValue == "from") {
@@ -60,7 +41,7 @@ const DefaultTokenList = ({ tokens, tokenValue, setFromCoin, setToCoin, setShowT
 
   return (
     <>
-      <div className="flex w-full  items-center bg-fetcch-dark/50   px-2 text-white ">
+      <div className="flex w-full items-center bg-fetcch-dark/50   px-2 text-white ">
         <AiOutlineSearch className="text-2xl" />
         <input
           type="text"
@@ -68,12 +49,12 @@ const DefaultTokenList = ({ tokens, tokenValue, setFromCoin, setToCoin, setShowT
           onChange={(e) => {
             setSearchToken(e.target.value);
           }}
-          placeholder="search tokens"
+          placeholder="Search tokens"
           className="w-full border-none bg-transparent p-3 focus:border-none focus:outline-none"
         />
       </div>
       <div className="flex flex-wrap items-center space-x-2 space-y-1">
-        {defaultTokens?.map((token: TokenInterface, index: number) => {
+        {tokenValue === 'from' && defaultTokens?.map((token: TokenInterface, index: number) => {
           return (
             <div
               key={index}
@@ -83,6 +64,29 @@ const DefaultTokenList = ({ tokens, tokenValue, setFromCoin, setToCoin, setShowT
                 } else {
                   setToCoin(token);
                 }
+                setShowTokenList(false);
+              }}
+            >
+              {' '}
+              <CoinCaps
+                name={token.name}
+                symbol={token.symbol}
+                key={token.address}
+                logoURI={token.logoURI}
+                chainId={token.chainId}
+                address={token.address}
+                decimals={token.decimals}
+              />{' '}
+            </div>
+          );
+        })}
+        {tokenValue === 'to' && defaultToTokens?.map((token: TokenInterface, index: number) => {
+          console.log(token)
+          return (
+            <div
+              key={index}
+              onClick={() => {
+                setToCoin(token);
                 setShowTokenList(false);
               }}
             >
@@ -152,7 +156,7 @@ const DefaultTokenList = ({ tokens, tokenValue, setFromCoin, setToCoin, setShowT
       </div>
 
       <div className="absolute bottom-0 flex w-full items-center justify-between pb-2">
-        <div>tokens : {tokens?.length}</div>
+        <div>There are {tokens?.length} tokens</div>
       </div>
     </>
   );

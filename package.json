@@ -20,7 +20,7 @@
     "axios": "^0.27.2",
     "clsx": "^1.2.1",
     "ethers": "^5.6.9",
-    "fetcch-chain-data": "^0.0.4",
+    "fetcch-chain-data": "^0.0.5",
     "next": "^12.2.2",
     "next-seo": "^5.4.0",
     "react": "^18.2.0",

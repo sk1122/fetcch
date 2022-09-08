@@ -3128,10 +3128,10 @@ fastq@^1.6.0:
   dependencies:
     reusify "^1.0.4"
 
-fetcch-chain-data@^0.0.4:
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/fetcch-chain-data/-/fetcch-chain-data-0.0.4.tgz#7f391eff1f2a73e117c337a4c542fa8ef198059d"
-  integrity sha512-O82iRtLws2E6Jpo/0LGt+QhftIbvw1tkdh5rWOhBCwtDESC4PTXtiaqi9wOAvMb8r2cPlQF/Lvf+u5oVsmji2w==
+fetcch-chain-data@^0.0.5:
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/fetcch-chain-data/-/fetcch-chain-data-0.0.5.tgz#2ecf87ad1586308253d24db31f6c6ea198eeac1c"
+  integrity sha512-TVTvuSJIGrfBaZCp+6oOuiwZlUwICPV5TxtOu+np61ZEaOwnlqAtloa5xrJ+rR/Q2CTqslIFHSTcCG7RbHKGxw==
   dependencies:
     ts-node "^10.9.1"
 

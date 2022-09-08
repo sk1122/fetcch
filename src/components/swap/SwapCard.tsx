@@ -1,4 +1,4 @@
-import { Transition } from '@headlessui/react';
+import { Switch, Transition } from '@headlessui/react';
 import React, { useEffect, useState } from 'react';
 import { useAccount, useSigner } from 'wagmi';
 
@@ -40,7 +40,7 @@ const SwapCard = () => {
   );
   const [fees, setFees] = useState('0')
 
-  const { estimateFees, swapFunds } = useBridge();
+  const { estimateFees, swap } = useBridge();
 
   // @ts-ignore
   const [fromCoin, setFromCoin] = useState(coins[fromChain.internalId][0]);
@@ -104,11 +104,11 @@ const SwapCard = () => {
 
 	const { data: signer } = useSigner();
 
-	const swap = async () => {
+	const swapFunds = async () => {
 		if(signer && fromCoin && toCoin) {
 			const chainId = await signer.getChainId()
 			// console.log(chainId, fromCoin.lchainId);
-			if(chainId !== fromCoin.lchainId) {
+			if(chainId !== fromChain.chainId) {
 				alert("from chain is not same as connect chain")
 				return
 			}
@@ -118,7 +118,7 @@ const SwapCard = () => {
 				return
 			}
 
-			const tx = await swapFunds(fromCoin as any, toCoin as any, fromAmount, ethers.utils.parseUnits(toAmount, toCoin?.decimals).toString(), toggle2 ? receiver : await signer.getAddress(), signer)
+			const tx = await swap(toggle2 ? receiver : await signer.getAddress(), fromChain, toChain, fromCoin, toCoin, ethers.utils.parseUnits(fromAmount, fromCoin.decimals).toString(), signer)
 			console.log(tx)
 		}
 	}
@@ -187,10 +187,10 @@ const SwapCard = () => {
 								<CoinSelect
 									value={fromCoin as any}
 									setValue={setFromCoin}
-                  tokenValue="from"
-                  setShowTokenList={setShowTokenList}
-                  showTokenList={showTokenList}
-                  setTokenValue={setTokenValue}
+									tokenValue="from"
+									setShowTokenList={setShowTokenList}
+									showTokenList={showTokenList}
+									setTokenValue={setTokenValue}
 								/>
 							</div>
 						</div>
@@ -221,16 +221,13 @@ const SwapCard = () => {
 								disabled
 							/>
 							<div className="absolute inset-y-0 right-0 flex w-2/5 items-center rounded-r-md bg-white">
-								<span className="pr-2 text-xs font-semibold text-fetcch-purple underline underline-offset-1">
-									MAX
-								</span>
 									<CoinSelect
 									value={toCoin as any}
 									setValue={setToCoin}
-                  tokenValue="to"
-                  setShowTokenList={setShowTokenList}
-                  showTokenList={showTokenList}
-                  setTokenValue={setTokenValue}
+									tokenValue="to"
+									setShowTokenList={setShowTokenList}
+									showTokenList={showTokenList}
+									setTokenValue={setTokenValue}
 								/>
 							</div>
 						</div>
@@ -239,7 +236,70 @@ const SwapCard = () => {
 				</div>
 			</div>
 
-		{/* section #3 removed */}
+			<div className="flex w-full flex-col justify-evenly space-y-6 space-x-3 md:flex-row md:space-y-0">
+			<div className="flex w-full items-center justify-between space-x-4">
+					<h2 className="pl-2 text-left font-semibold">
+						Change Reciever
+					</h2>
+					<Switch
+						checked={toggle2}
+						onChange={() => _setToggle2(!toggle2)}
+						className={
+							toggle2 ? "bg-fetcch-purple" : "bg-gray-200"
+							+ " relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none"
+						}
+					>
+						<span className="sr-only">Use setting</span>
+						<span
+							className={
+								toggle2 ? "translate-x-5" : "translate-x-0"
+								+ " pointer-events-none relative inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+							}
+						>
+							<span
+								className={
+									toggle2
+										? "opacity-0 ease-out duration-100"
+										: "opacity-100 ease-in duration-200" +
+									" absolute inset-0 h-full w-full flex items-center justify-center transition-opacity"
+								}
+								aria-hidden="true"
+							>
+								<svg
+									className="h-3 w-3 text-gray-400"
+									fill="none"
+									viewBox="0 0 12 12"
+								>
+									<path
+										d="M4 8l2-2m0 0l2-2M6 6L4 4m2 2l2 2"
+										stroke="currentColor"
+										strokeWidth={2}
+										strokeLinecap="round"
+										strokeLinejoin="round"
+									/>
+								</svg>
+							</span>
+							<span
+								className={
+									toggle2
+										? "opacity-100 ease-in duration-200"
+										: "opacity-0 ease-out duration-100" +
+									" absolute inset-0 h-full w-full flex items-center justify-center transition-opacity"
+								}
+								aria-hidden="true"
+							>
+								<svg
+									className="h-3 w-3 text-fetcch-purple"
+									fill="currentColor"
+									viewBox="0 0 12 12"
+								>
+									<path d="M3.707 5.293a1 1 0 00-1.414 1.414l1.414-1.414zM5 8l-.707.707a1 1 0 001.414 0L5 8zm4.707-3.293a1 1 0 00-1.414-1.414l1.414 1.414zm-7.414 2l2 2 1.414-1.414-2-2-1.414 1.414zm3.414 2l4-4-1.414-1.414-4 4 1.414 1.414z" />
+								</svg>
+							</span>
+						</span>
+					</Switch>
+				</div>
+				</div>
 
 			{/* section #4 */}
 			{toggle2 && (
@@ -266,7 +326,7 @@ const SwapCard = () => {
 			{!address && <WalletConnect />}
 			{address && (
 				<div
-					onClick={() => swap()}
+					onClick={() => swapFunds()}
 					className="cursor-pointer flex w-full items-center justify-center space-x-2 rounded-md bg-fetcch-purple px-6 py-2 text-center text-sm font-medium text-white"
 				>
 					<h1>Swap Here</h1>
