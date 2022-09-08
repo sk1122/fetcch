@@ -15,13 +15,13 @@ const CustomTokenList = ({ tokenlists, setTokens }: Props) => {
   const [selectedTab, setSelectedTab] = useState('List');
   return (
     <>
-      <div className="flex w-full justify-between space-y-0 bg-[#1F1F1F] p-1 text-center">
+      <div className="flex w-full justify-between space-y-0 bg-fetcch-dark/30  p-1 text-center">
         <div
           onClick={() => {
             setSelectedTab('List');
           }}
           className={`${
-            selectedTab === 'List' ? 'bg-[#353434]' : ' bg-transparent '
+            selectedTab === 'List' ? 'bg-fetcch-dark/50 ' : ' bg-transparent '
           } w-full  p-2`}
         >
           <p>List</p>
@@ -31,7 +31,7 @@ const CustomTokenList = ({ tokenlists, setTokens }: Props) => {
             setSelectedTab('Token');
           }}
           className={`${
-            selectedTab === 'Token' ? 'bg-[#353434]' : ' bg-transparent '
+            selectedTab === 'Token' ? 'bg-fetcch-dark/50 ' : ' bg-transparent '
           } w-full  p-2`}
         >
           <p>Token</p>
@@ -40,7 +40,7 @@ const CustomTokenList = ({ tokenlists, setTokens }: Props) => {
       <div>
         {selectedTab === 'List' ? (
           <>
-            <div className="mb-3 flex  w-full items-center  bg-[#353434] px-2 text-white">
+            <div className="mb-3 flex  w-full items-center  bg-fetcch-dark/50  px-2 text-white">
               <AiOutlineSearch className="text-2xl" />
               <input
                 type="text"

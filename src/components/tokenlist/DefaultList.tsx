@@ -31,7 +31,7 @@ const DefaultTokenList = ({
 
   return (
     <>
-      <div className="flex w-full  items-center bg-[#353434]  px-2 text-white ">
+      <div className="flex w-full  items-center bg-fetcch-dark/50   px-2 text-white ">
         <AiOutlineSearch className="text-2xl" />
         <input
           type="text"
@@ -77,7 +77,7 @@ const DefaultTokenList = ({
           setTokenOnScreenIndex(tokenOnScrenIndex + 1);
         }}
       >
-        <div className="w-full space-y-1 bg-[#1F1F1F] p-1">
+        <div className="w-full space-y-1  p-1">
           {tokens
             ?.slice(
               0,
@@ -130,7 +130,7 @@ const DefaultTokenList = ({
           onClick={() => {
             setOnManageTokenPage(true);
           }}
-          className=" flex items-center bg-[#353434] px-3 py-2  "
+          className=" flex items-center  bg-fetcch-dark/50 px-3 py-2   "
         >
           {' '}
           <span>
