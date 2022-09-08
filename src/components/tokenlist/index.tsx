@@ -65,10 +65,10 @@ const TokenListComp = ({ tokenValue }: Props) => {
 
   return (
     <>
-      <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-fetcch-purple bg-opacity-25 outline-none focus:outline-none">
-        <div className="no-scrollbar relative my-6 mx-auto  max-h-[800px] w-[450px] max-w-5xl  overflow-auto ">
+      <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-fetcch-purple bg-opacity-30 outline-none focus:outline-none">
+        <div className="no-scrollbar relative my-6 mx-auto  max-h-[800px] w-[450px] max-w-5xl overflow-auto   bg-fetcch-purple ">
           {/* content */}
-          <div className="relative flex w-full flex-col overflow-hidden rounded-lg border-0 bg-fetcch-purple  px-5 text-white shadow-lg outline-none focus:outline-none ">
+          <div className="relative flex w-full flex-col overflow-hidden rounded-lg border-0  bg-fetcch-dark/10 px-5 text-white shadow-lg outline-none focus:outline-none ">
             <div className="sticky top-0 z-40 mt-5 flex items-center justify-between rounded-t  ">
               {onMangaeTokenPage ? (
                 <>
