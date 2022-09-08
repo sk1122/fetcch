@@ -2,11 +2,15 @@ import { Switch } from '@headlessui/react';
 import React, { useEffect, useState } from 'react';
 import { useAccount } from 'wagmi';
 
+import type { TokenInterface } from '@/contexts/AppContext';
+import { useAppContext } from '@/contexts/AppContext';
+import { useChainContext } from '@/contexts/chaincontext';
 import { useBridge } from '@/hooks/useBridge';
 import { Swap } from '@/icons/swap';
 import type { Chain, Coin } from '@/types';
 
 import SwapButton from '../landing/SwapButton';
+import TokenListComp from '../tokenlist';
 import ChainSelect from './ChainSelect';
 import CoinSelect from './CoinSelect';
 import WalletConnect from './shared/WalletConnect';
@@ -32,6 +36,7 @@ const chainList: Chain[] = [
   },
 ];
 
+// eslint-disable-next-line unused-imports/no-unused-vars
 const coins: { '1': Coin[]; '137': Coin[] } = {
   '1': [
     {
@@ -73,19 +78,19 @@ const coins: { '1': Coin[]; '137': Coin[] } = {
 
 const SwapCard = () => {
   const { address } = useAccount();
-
   const [toggle, setToggle] = useState(true);
   const [fromChain, setFromChain] = useState(chainList[0] as Chain);
   const [toChain, setToChain] = useState(chainList[1] as Chain);
   const [fromChainList, setFromChainList] = useState([chainList[1]]);
   const [toChainList, setToChainList] = useState([chainList[0]]);
-
+  // eslint-disable-next-line unused-imports/no-unused-vars
+  const [tokenvalue, setTokenValue] = useState('from');
+  const { fromCoin, toCoin, setFromCoin, setToCoin } = useChainContext();
+  const { showTokenList } = useAppContext();
   const { estimateFees } = useBridge();
 
   // @ts-ignore
-  const [fromCoin, setFromCoin] = useState(coins[fromChain.chainId][0]);
-  // @ts-ignore
-  const [toCoin, setToCoin] = useState(coins[toChain.chainId][1]);
+
   const [fromAmount, setFromAmount] = useState('');
   const [toAmount, setToAmount] = useState('0.00');
 
@@ -198,9 +203,10 @@ const SwapCard = () => {
                   MAX
                 </span>
                 <CoinSelect
-                  value={fromCoin as Coin}
-                  setValue={setFromCoin}
-                  coins={coins[fromChain.chainId]}
+                  setTokenValue={setTokenValue}
+                  value={fromCoin as TokenInterface}
+                  setValue={setToCoin}
+                  tokenValue="from"
                 />
               </div>
             </div>
@@ -233,9 +239,10 @@ const SwapCard = () => {
                   MAX
                 </span>
                 <CoinSelect
-                  value={toCoin as Coin}
+                  setTokenValue={setTokenValue}
+                  value={toCoin as TokenInterface}
                   setValue={setToCoin}
-                  coins={coins[toChain.chainId]}
+                  tokenValue="to"
                 />
               </div>
             </div>
@@ -314,6 +321,8 @@ const SwapCard = () => {
           <SwapButton classes="w-40 px-6 py-2 text-base hidden md:flex" />
         </div>
       )}
+
+      {showTokenList ? <TokenListComp tokenValue={tokenvalue} /> : null}
     </section>
   );
 };

@@ -1,26 +1,31 @@
-import { Menu, Transition } from '@headlessui/react';
+import { Menu } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/solid';
-import React, { Fragment } from 'react';
+import React from 'react';
 
-import type { Coin } from '@/types';
+import { useAppContext } from '@/contexts/AppContext';
+import type { TokenInterface } from '@/contexts/chaincontext';
 
+// eslint-disable-next-line unused-imports/no-unused-vars
 function classNames(...classes: any) {
   return classes.filter(Boolean).join(' ');
 }
 
 interface IProps {
-  coins: Coin[];
-  value: Coin;
+  value: TokenInterface;
   setValue: Function;
+  setTokenValue: Function;
+  tokenValue: string;
 }
 
 export default function CoinSelect(params: IProps) {
-  const selectedChain = (coin: Coin) => {
-    params.setValue(coin);
-  };
+  const { showTokenList, setShowTokenList } = useAppContext();
 
   return (
     <Menu
+      onClick={() => {
+        setShowTokenList(!showTokenList);
+        params.setTokenValue(params.tokenValue);
+      }}
       as="div"
       className="relative inline-block h-full w-full rounded-r-md border-none bg-transparent py-0 text-left text-gray-500"
     >
@@ -29,9 +34,9 @@ export default function CoinSelect(params: IProps) {
           {params.value ? (
             <div className="flex flex-row items-center">
               <img
-                src={params.value.icon}
+                src={params.value.logoURI}
                 alt="chain"
-                className="mr-3 shrink-0 rounded-md fill-current text-gray-400 group-hover:text-gray-500"
+                className="mr-3 h-8 w-8 shrink-0 rounded-md fill-current text-gray-400 group-hover:text-gray-500"
               />
               <span className="mr-2 text-left dark:text-white">
                 {params.value.name}
@@ -50,45 +55,6 @@ export default function CoinSelect(params: IProps) {
           <ChevronDownIcon className="h-5 w-5" aria-hidden="true" />
         </Menu.Button>
       </div>
-
-      <Transition
-        as={Fragment}
-        enter="transition ease-out duration-100"
-        enterFrom="transform opacity-0 scale-95"
-        enterTo="transform opacity-100 scale-100"
-        leave="transition ease-in duration-75"
-        leaveFrom="transform opacity-100 scale-100"
-        leaveTo="transform opacity-0 scale-95"
-      >
-        <Menu.Items className="absolute inset-x-0 z-10 mt-2 w-full divide-y divide-fetcch-purple/50 rounded-md bg-white shadow-lg ring-black/5 focus:outline-none dark:border-2 dark:border-fetcch-purple/30 dark:bg-fetcch-dark">
-          {params.coins.map((chain: any) => (
-            <div className="pt-1" key={chain.id}>
-              <Menu.Item>
-                {({ active }: { active: any }) => (
-                  <div
-                    className={classNames(
-                      active
-                        ? 'bg-gray-100 dark:bg-fetcch-purple/20 rounded-b-md dark:text-fetcch-mustard text-gray-900'
-                        : 'text-gray-700 dark:text-white',
-                      'group flex items-center px-4 py-2 text-sm cursor-pointer'
-                    )}
-                    onClick={() => selectedChain(chain)}
-                  >
-                    <div className="flex h-full flex-row items-center">
-                      <img
-                        className="mr-2.5 w-5 rounded-md object-cover"
-                        src={chain.icon}
-                        alt="chain_icon"
-                      />
-                      <span className="leading-6">{chain.name}</span>
-                    </div>
-                  </div>
-                )}
-              </Menu.Item>
-            </div>
-          ))}
-        </Menu.Items>
-      </Transition>
     </Menu>
   );
 }
