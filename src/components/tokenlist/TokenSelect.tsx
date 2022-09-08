@@ -36,7 +36,7 @@ const TokenListSelect = ({ name, logo, setTokens, url }: Props) => {
       <div
         className={`${
           toggle
-            ? ' text-wagpay-dark bg-gray-200 '
+            ? ' text-wagpay-dark bg-gray-200 text-black '
             : ' bg-[#353434] text-white '
         } flex items-center justify-between rounded-sm  p-2`}
       >
