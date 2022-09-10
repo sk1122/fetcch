@@ -32,6 +32,11 @@ export const useBridge = () => {
 		'137': 109,
 		'56': 102
 	}
+	
+	//remoteAdr -> toChain lz impl address
+	//localAdr -> fromChain lz impl address
+	//const destination = ethers.utils.solidityPack(["address", "address"], [remoteAdr, localAdr]);
+	const destination = ethers.utils.solidityPack(["address", "address"], [addr2[toChain.chainId], addr2[fromChain.chainId]]);
 
     const contract = new ethers.Contract(addresses[fromChain.chainId], abi, signer);
 	console.log(fromToken, toToken)
@@ -46,7 +51,7 @@ export const useBridge = () => {
       [
         toChain.internalId === 3 ? getTokenByName('BUSD', '3').address : getTokenByName('USDC', toChain.internalId.toString()).address,
         toToken.address,
-        addr2[toChain.chainId],
+        destination,
         !(toToken.symbol === 'USDC' || toToken.symbol === 'BUSD')
       ],
       receiver,
