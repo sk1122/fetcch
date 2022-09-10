@@ -121,13 +121,13 @@ export const useBridge = () => {
 
     }
 
-    console.log(fees);
+    // console.log(fees);
 
     return fees;
   };
 
   return {
-    estimateFees,
-	swap
+    swap,
+    estimateFees
   };
 }
