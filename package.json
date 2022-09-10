@@ -9,9 +9,7 @@
     "export": "next export",
     "build-prod": "run-s clean build export",
     "clean": "rimraf .next out",
-    "lint": "next lint",
-    "check-types": "tsc --noEmit --pretty",
-    "prepare": "husky install"
+    "check-types": "tsc --noEmit --pretty"
   },
   "dependencies": {
     "@headlessui/react": "^1.6.6",

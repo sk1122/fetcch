@@ -18,7 +18,7 @@ interface IProps {
   showTokenList: any
 }
 
-export default function CoinSelect({value, setValue, setTokenValue, tokenValue, setShowTokenList, showTokenList}: IProps) {
+export default function CoinSelect({value, setTokenValue, tokenValue, setShowTokenList, showTokenList}: IProps) {
   return (
     <Menu
       onClick={() => {

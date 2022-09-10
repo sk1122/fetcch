@@ -23,8 +23,8 @@ interface Props {
 const DefaultTokenList = ({ tokens, tokenValue, setFromCoin, setToCoin, setShowTokenList, showTokenList, toChain, fromChain, setTokens }: Props) => {
   const [searchToken, setSearchToken] = useState<string>('');
   const [tokenOnScrenIndex, setTokenOnScreenIndex] = useState(10);
-  const [defaultTokens, setDefaultTokens] = useState(fromChain.internalId === 3 ? [getTokenByName('BUSD', '3'), getTokenByName('WBNB', '3')] : [getTokenByName('USDT', fromChain.internalId.toString()), getTokenByName('USDC', fromChain.internalId.toString())])
-  const [defaultToTokens, setDefaultToTokens] = useState(toChain.internalId === 3 ? [getTokenByName('BUSD', '3'), getTokenByName('WBNB', '3')] : [getTokenByName('USDT', fromChain.internalId.toString()), getTokenByName('USDC', fromChain.internalId.toString())])
+  const [defaultTokens] = useState(fromChain.internalId === 3 ? [getTokenByName('BUSD', '3'), getTokenByName('WBNB', '3')] : [getTokenByName('USDT', fromChain.internalId.toString()), getTokenByName('USDC', fromChain.internalId.toString())])
+  const [defaultToTokens] = useState(toChain.internalId === 3 ? [getTokenByName('BUSD', '3'), getTokenByName('WBNB', '3')] : [getTokenByName('USDT', fromChain.internalId.toString()), getTokenByName('USDC', fromChain.internalId.toString())])
 
   useEffect(() => {
     if(tokenValue == "from") {
@@ -125,6 +125,8 @@ const DefaultTokenList = ({ tokens, tokenValue, setFromCoin, setToCoin, setShowT
               ) {
                 return token;
               }
+
+              return undefined
             })
             .map((token: TokenInterface, index: number) => {
               return (

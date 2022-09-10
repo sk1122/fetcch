@@ -1,4 +1,4 @@
-import { RadioGroup, Transition } from '@headlessui/react';
+import { RadioGroup } from '@headlessui/react';
 import { CheckCircleIcon } from '@heroicons/react/solid';
 import { useState } from 'react';
 

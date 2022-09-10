@@ -1,8 +1,8 @@
 import { Chain } from 'fetcch-chain-data';
-import {  useEffect, useState } from 'react';
+import {  useState } from 'react';
 import { AiOutlineClose } from 'react-icons/ai';
 import { IoMdArrowBack } from 'react-icons/io';
-import { coins, TokenInterface } from '../swap/SwapCard';
+import { coins } from '../swap/SwapCard';
 
 
 import DefaultTokenList from './DefaultList';
