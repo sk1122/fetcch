@@ -44,8 +44,8 @@ export const useBridge = () => {
         !(fromToken.symbol === 'USDC' || fromToken.symbol === 'BUSD')
       ],
       [
+	toToken.address,
         toChain.internalId === 3 ? getTokenByName('BUSD', '3').address : getTokenByName('USDC', toChain.internalId.toString()).address,
-        toToken.address,
         addr2[toChain.chainId],
         !(toToken.symbol === 'USDC' || toToken.symbol === 'BUSD')
       ],
