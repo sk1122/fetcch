@@ -1,15 +1,18 @@
 import type { Coin } from '@/types';
 import { ethers } from 'ethers';
 import { Chain, getTokenByName } from 'fetcch-chain-data';
+import { chainId } from 'wagmi';
 
 interface Return {
   fees: number;
-  amountOut: number;
+  amountInTokens: number;
 }
 
-const abi = [{ "inputs": [{ "internalType": "address", "name": "_pool", "type": "address" }, { "internalType": "address", "name": "_dex", "type": "address" }], "stateMutability": "nonpayable", "type": "constructor" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "previousOwner", "type": "address" }, { "indexed": true, "internalType": "address", "name": "newOwner", "type": "address" }], "name": "OwnershipTransferred", "type": "event" }, { "inputs": [{ "internalType": "address", "name": "_dex", "type": "address" }], "name": "changeDex", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "_pool", "type": "address" }], "name": "changePool", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "dex", "outputs": [{ "internalType": "contract UniV2Provider", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "owner", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "pool", "outputs": [{ "internalType": "contract FetcchPool", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "renounceOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "components": [{ "components": [{ "internalType": "address", "name": "_fromToken", "type": "address" }, { "internalType": "address", "name": "_toToken", "type": "address" }, { "internalType": "uint256", "name": "_amount", "type": "uint256" }, { "internalType": "bool", "name": "dexRequired", "type": "bool" }, { "internalType": "uint256", "name": "_amountOut", "type": "uint256" }], "internalType": "struct FetcchBridge.fromChainData", "name": "_fromChain", "type": "tuple" }, { "components": [{ "internalType": "address", "name": "_fromToken", "type": "address" }, { "internalType": "address", "name": "_toToken", "type": "address" }, { "internalType": "bytes", "name": "_destination", "type": "bytes" }, { "internalType": "uint256", "name": "_amount", "type": "uint256" }, { "internalType": "bool", "name": "dexRequired", "type": "bool" }], "internalType": "struct FetcchBridge.toChainData", "name": "_toChain", "type": "tuple" }, { "internalType": "address", "name": "_receiver", "type": "address" }, { "internalType": "uint16", "name": "_toChainID", "type": "uint16" }], "internalType": "struct FetcchBridge.swapData", "name": "_swapData", "type": "tuple" }], "name": "swap", "outputs": [], "stateMutability": "payable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "newOwner", "type": "address" }], "name": "transferOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function" }]
+const abi = [{"inputs":[{"internalType":"address","name":"_pool","type":"address"},{"internalType":"address","name":"_dex","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"inputs":[{"internalType":"address","name":"_dex","type":"address"}],"name":"changeDex","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_pool","type":"address"}],"name":"changePool","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"dex","outputs":[{"internalType":"contract UniV2Provider","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint16","name":"_fromChainID","type":"uint16"},{"internalType":"uint16","name":"_toChainID","type":"uint16"}],"name":"getNonce","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"pool","outputs":[{"internalType":"contract FetcchPool","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"tokenAddr","type":"address"}],"name":"rescueFunds","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"components":[{"internalType":"address","name":"_refundAd","type":"address"},{"components":[{"internalType":"address","name":"_fromToken","type":"address"},{"internalType":"address","name":"_toToken","type":"address"},{"internalType":"uint256","name":"_amount","type":"uint256"},{"internalType":"bool","name":"dexRequired","type":"bool"}],"internalType":"struct FetcchBridge.fromChainData","name":"_fromChain","type":"tuple"},{"components":[{"internalType":"address","name":"_fromToken","type":"address"},{"internalType":"address","name":"_toToken","type":"address"},{"internalType":"bytes","name":"_destination","type":"bytes"},{"internalType":"bool","name":"dexRequired","type":"bool"}],"internalType":"struct FetcchBridge.toChainData","name":"_toChain","type":"tuple"},{"internalType":"address","name":"_receiver","type":"address"},{"internalType":"uint16","name":"_fromChainID","type":"uint16"},{"internalType":"uint16","name":"_toChainID","type":"uint16"}],"internalType":"struct FetcchBridge.swapData","name":"_swapData","type":"tuple"}],"name":"swap","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"}];
 
 export const useBridge = () => {
+
+
   const swap = async(receiver: string, fromChain: Chain, toChain: Chain, fromToken: any, toToken: any, amount: string, signer: ethers.Signer) => {
 
     // LZ BSC -> 0xD187329cEAe8F0f08d7fbb51444ac301B0908616
@@ -33,6 +36,11 @@ export const useBridge = () => {
 		'56': 102
 	}
 
+  //remoteAdr -> toChain lz impl address
+	//localAdr -> fromChain lz impl address
+	//const destination = ethers.utils.solidityPack(["address", "address"], [remoteAdr, localAdr]);
+	const destination = ethers.utils.solidityPack(["address", "address"], [addr2[toChain.chainId], addr2[fromChain.chainId]]);
+
     const contract = new ethers.Contract(addresses[fromChain.chainId], abi, signer);
 	console.log(fromToken, toToken)
     const swapdata: any[] = [
@@ -44,9 +52,9 @@ export const useBridge = () => {
         !(fromToken.symbol === 'USDC' || fromToken.symbol === 'BUSD')
       ],
       [
-        toChain.internalId === 3 ? getTokenByName('BUSD', '3').address : getTokenByName('USDC', toChain.internalId.toString()).address,
         toToken.address,
-        addr2[toChain.chainId],
+        toChain.internalId === 3 ? getTokenByName('BUSD', '3').address : getTokenByName('USDC', toChain.internalId.toString()).address,
+        destination,
         !(toToken.symbol === 'USDC' || toToken.symbol === 'BUSD')
       ],
       receiver,
@@ -54,80 +62,160 @@ export const useBridge = () => {
       lzId[toChain.chainId]
     ]
 
+    console.log(signer)
+
+    console.log(contract.address, "contract")
+
 	console.log(swapdata, "swapData")
 
     const tx = await contract.swap(swapdata, {value: ethers.utils.parseEther(fromChain.internalId === 3 ? '0.01' : fromChain.internalId === 2 ? '2' : '0'), gasPrice: signer.provider?.getGasPrice(), gasLimit: 15000000});
     await tx;
   }
 
-  const estimateFees = async (
+  // const estimateFees = async (
+  //   fromToken: Coin,
+  //   toToken: Coin,
+  //   amount: number
+  // ): Promise<Return> => {
+	// const bridgeTokens: any = ["USDC", "USDT"];
+  //   let fromChainDexRequired = false;
+  //   let toChainDexRequired = false;
+
+  //   if (!bridgeTokens.includes(fromToken.name)) fromChainDexRequired = true;
+  //   if (!bridgeTokens.includes(toToken.name)) toChainDexRequired = true;
+
+	// 	console.log(fromChainDexRequired, toChainDexRequired)
+
+  //   const fees: Return = {
+  //     fees: 0,
+  //     amountOut: amount,
+  //   };
+
+	// 	if (fromToken.name.startsWith('USD') || (fromToken.name.startsWith('W') && toToken.name.startsWith('W'))) {
+	// 		const point1Percent = amount * 0.001
+	
+	// 		fees.fees += point1Percent
+	// 		fees.amountOut -= point1Percent
+	// 	} else {
+	// 		const point1Percent = (amount*1000) * 0.001
+	
+	// 		fees.fees += point1Percent
+	// 		fees.amountOut -= point1Percent
+	// 	}
+
+  //   if (fromChainDexRequired) {
+	// 		let point3Percent = amount;
+	// 		if ((fromToken.name.startsWith('USD') && toToken.name.startsWith('USD')) || (fromToken.name.startsWith('W') && toToken.name.startsWith('W'))) {
+	// 			point3Percent = amount * 0.003;
+	// 			fees.fees += point3Percent;
+	// 			fees.amountOut -= point3Percent;
+	// 		} else {
+	// 			point3Percent = (amount*1000) * 0.003;
+	// 			fees.fees += point3Percent;
+	// 			fees.amountOut = (amount * 1000) - point3Percent;
+	// 			console.log((amount * 1000))
+	// 		}
+
+  //   }
+
+  //   if (toChainDexRequired) {
+	// 		let point3Percent = amount;
+	// 		console.log(fromToken.name, toToken.name)
+	// 		if ((fromToken.name.startsWith('USD') && toToken.name.startsWith('USD')) || (fromToken.name.startsWith('W') && toToken.name.startsWith('W'))) {
+	// 			point3Percent = amount * 0.003;
+	// 			fees.fees += point3Percent;
+	// 			fees.amountOut -= point3Percent;
+	// 		} else {
+	// 			point3Percent = (amount * 1000) * 0.003;
+	// 			fees.fees += point3Percent;
+	// 			fees.amountOut = (amount * 1000) - point3Percent;
+	// 		}
+
+  //   }
+
+  //   // console.log(fees);
+
+  //   return fees;
+  // };
+
+  const estimateAmountOut = async (
+    fromChain: Chain,
+    toChain: Chain,
     fromToken: Coin,
     toToken: Coin,
     amount: number
-  ): Promise<Return> => {
-	const bridgeTokens: any = ["USDC", "USDT"];
+  ): Promise<Return> =>{
+    const bridgeTokens: any = ["USDC", "USDT","BUSD"];
     let fromChainDexRequired = false;
     let toChainDexRequired = false;
 
     if (!bridgeTokens.includes(fromToken.name)) fromChainDexRequired = true;
     if (!bridgeTokens.includes(toToken.name)) toChainDexRequired = true;
 
-		console.log(fromChainDexRequired, toChainDexRequired)
-
-    const fees: Return = {
+    const fromStable = fromChain.internalId === 3 ? getTokenByName('BUSD', '3').address : getTokenByName('USDC', fromChain.internalId.toString()).address
+    const toStable = toChain.internalId === 3 ? getTokenByName('BUSD', '3').address : getTokenByName('USDC', toChain.internalId.toString()).address
+      
+    const amounts: Return = {
       fees: 0,
-      amountOut: amount,
+      amountInTokens: amount
     };
 
-		if (fromToken.name.startsWith('USD') || (fromToken.name.startsWith('W') && toToken.name.startsWith('W'))) {
-			const point1Percent = amount * 0.001
-	
-			fees.fees += point1Percent
-			fees.amountOut -= point1Percent
-		} else {
-			const point1Percent = (amount*1000) * 0.001
-	
-			fees.fees += point1Percent
-			fees.amountOut -= point1Percent
-		}
+    if (bridgeTokens.includes(fromToken.name) && bridgeTokens.includes(toToken.name)) {
 
-    if (fromChainDexRequired) {
-			let point3Percent = amount;
-			if ((fromToken.name.startsWith('USD') && toToken.name.startsWith('USD')) || (fromToken.name.startsWith('W') && toToken.name.startsWith('W'))) {
-				point3Percent = amount * 0.003;
-				fees.fees += point3Percent;
-				fees.amountOut -= point3Percent;
-			} else {
-				point3Percent = (amount*1000) * 0.003;
-				fees.fees += point3Percent;
-				fees.amountOut = (amount * 1000) - point3Percent;
-				console.log((amount * 1000))
-			}
+      amounts.fees = amount * 10**6 * 0.001;
+      amounts.amountInTokens = amount * 10**6 *0.999;
 
+    } else if (fromChainDexRequired && !toChainDexRequired) {
+
+      const data = await fetch(
+        `https://api.1inch.exchange/v4.0/${fromChain.chainId}/quote?fromTokenAddress=${fromToken.address}&toTokenAddress=${fromStable}&amount=${amount}`
+      );
+      const res = await data.json();
+      let amountOut = res.toTokenAmount
+      console.log(amountOut)
+
+      amounts.fees = amountOut * 0.001;
+      amounts.amountInTokens = amountOut * 0.999;
+
+    } else if (toChainDexRequired && !fromChainDexRequired) {
+
+      const data = await fetch(
+        `https://api.1inch.exchange/v4.0/${toChain.chainId}/quote?fromTokenAddress=${toStable}&toTokenAddress=${toToken.address}&amount=${amount}`
+      );
+      const res = await data.json();
+      let amountOut = res.toTokenAmount
+      console.log(amountOut)
+      
+      amounts.fees = amountOut * 0.001;
+      amounts.amountInTokens = amountOut * 0.999;
+      
+    } else {
+
+      const data1 = await fetch(
+        `https://api.1inch.exchange/v4.0/${fromChain.chainId}/quote?fromTokenAddress=${fromToken.address}&toTokenAddress=${fromStable}&amount=${amount}`
+      );
+      const res1 = await data1.json();
+      let amountOut1 = res1.toTokenAmount
+      console.log(amountOut1)
+
+      const data2 = await fetch(
+        `https://api.1inch.exchange/v4.0/${toChain.chainId}/quote?fromTokenAddress=${toStable}&toTokenAddress=${toToken.address}&amount=${amountOut1}`
+      );
+      const res2 = await data2.json();
+      let amountOut2 = res2.toTokenAmount
+      console.log(amountOut2)
+
+      amounts.fees = amountOut2 * 0.001;
+      amounts.amountInTokens = amountOut2 * 0.999;
     }
 
-    if (toChainDexRequired) {
-			let point3Percent = amount;
-			console.log(fromToken.name, toToken.name)
-			if ((fromToken.name.startsWith('USD') && toToken.name.startsWith('USD')) || (fromToken.name.startsWith('W') && toToken.name.startsWith('W'))) {
-				point3Percent = amount * 0.003;
-				fees.fees += point3Percent;
-				fees.amountOut -= point3Percent;
-			} else {
-				point3Percent = (amount * 1000) * 0.003;
-				fees.fees += point3Percent;
-				fees.amountOut = (amount * 1000) - point3Percent;
-			}
+    return amounts
 
-    }
+  }
 
-    // console.log(fees);
-
-    return fees;
-  };
 
   return {
     swap,
-    estimateFees
+    estimateAmountOut
   };
 }
