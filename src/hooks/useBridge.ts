@@ -1,11 +1,11 @@
 import type { Coin } from '@/types';
-import { ethers } from 'ethers';
-import { Chain, getTokenByName } from 'fetcch-chain-data';
+import { BigNumber, ethers } from 'ethers';
+import { Chain, getTokenByName, Token } from 'fetcch-chain-data';
 import { chainId } from 'wagmi';
 
 interface Return {
-  fees: number;
-  amountInTokens: number;
+  fees: string;
+  amountInTokens: string;
 }
 
 const abi = [{"inputs":[{"internalType":"address","name":"_pool","type":"address"},{"internalType":"address","name":"_dex","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"inputs":[{"internalType":"address","name":"_dex","type":"address"}],"name":"changeDex","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_pool","type":"address"}],"name":"changePool","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"dex","outputs":[{"internalType":"contract UniV2Provider","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint16","name":"_fromChainID","type":"uint16"},{"internalType":"uint16","name":"_toChainID","type":"uint16"}],"name":"getNonce","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"pool","outputs":[{"internalType":"contract FetcchPool","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"tokenAddr","type":"address"}],"name":"rescueFunds","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"components":[{"internalType":"address","name":"_refundAd","type":"address"},{"components":[{"internalType":"address","name":"_fromToken","type":"address"},{"internalType":"address","name":"_toToken","type":"address"},{"internalType":"uint256","name":"_amount","type":"uint256"},{"internalType":"bool","name":"dexRequired","type":"bool"}],"internalType":"struct FetcchBridge.fromChainData","name":"_fromChain","type":"tuple"},{"components":[{"internalType":"address","name":"_fromToken","type":"address"},{"internalType":"address","name":"_toToken","type":"address"},{"internalType":"bytes","name":"_destination","type":"bytes"},{"internalType":"bool","name":"dexRequired","type":"bool"}],"internalType":"struct FetcchBridge.toChainData","name":"_toChain","type":"tuple"},{"internalType":"address","name":"_receiver","type":"address"},{"internalType":"uint16","name":"_fromChainID","type":"uint16"},{"internalType":"uint16","name":"_toChainID","type":"uint16"}],"internalType":"struct FetcchBridge.swapData","name":"_swapData","type":"tuple"}],"name":"swap","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"}];
@@ -141,73 +141,96 @@ export const useBridge = () => {
   const estimateAmountOut = async (
     fromChain: Chain,
     toChain: Chain,
-    fromToken: Coin,
-    toToken: Coin,
-    amount: number
+    fromToken: any,
+    toToken: any,
+    amount: string
   ): Promise<Return> =>{
+    amount = ethers.utils.parseUnits(amount.toString(), fromToken.decimals).toString()
+
     const bridgeTokens: any = ["USDC", "USDT","BUSD"];
     let fromChainDexRequired = false;
     let toChainDexRequired = false;
 
-    if (!bridgeTokens.includes(fromToken.name)) fromChainDexRequired = true;
-    if (!bridgeTokens.includes(toToken.name)) toChainDexRequired = true;
+    if (!bridgeTokens.includes(fromToken.symbol)) fromChainDexRequired = true;
+    if (!bridgeTokens.includes(toToken.symbol)) toChainDexRequired = true;
 
     const fromStable = fromChain.internalId === 3 ? getTokenByName('BUSD', '3').address : getTokenByName('USDC', fromChain.internalId.toString()).address
     const toStable = toChain.internalId === 3 ? getTokenByName('BUSD', '3').address : getTokenByName('USDC', toChain.internalId.toString()).address
       
     const amounts: Return = {
-      fees: 0,
+      fees: '0',
       amountInTokens: amount
     };
 
-    if (bridgeTokens.includes(fromToken.name) && bridgeTokens.includes(toToken.name)) {
+    console.log(amounts)
 
-      amounts.fees = amount * 10**6 * 0.001;
-      amounts.amountInTokens = amount * 10**6 *0.999;
-
-    } else if (fromChainDexRequired && !toChainDexRequired) {
-
-      const data = await fetch(
-        `https://api.1inch.exchange/v4.0/${fromChain.chainId}/quote?fromTokenAddress=${fromToken.address}&toTokenAddress=${fromStable}&amount=${amount}`
-      );
-      const res = await data.json();
-      let amountOut = res.toTokenAmount
-      console.log(amountOut)
-
-      amounts.fees = amountOut * 0.001;
-      amounts.amountInTokens = amountOut * 0.999;
-
-    } else if (toChainDexRequired && !fromChainDexRequired) {
-
-      const data = await fetch(
-        `https://api.1inch.exchange/v4.0/${toChain.chainId}/quote?fromTokenAddress=${toStable}&toTokenAddress=${toToken.address}&amount=${amount}`
-      );
-      const res = await data.json();
-      let amountOut = res.toTokenAmount
-      console.log(amountOut)
-      
-      amounts.fees = amountOut * 0.001;
-      amounts.amountInTokens = amountOut * 0.999;
-      
-    } else {
-
+    if(fromChainDexRequired) {
       const data1 = await fetch(
-        `https://api.1inch.exchange/v4.0/${fromChain.chainId}/quote?fromTokenAddress=${fromToken.address}&toTokenAddress=${fromStable}&amount=${amount}`
+        `https://api.1inch.exchange/v4.0/${fromChain.chainId}/quote?fromTokenAddress=${fromToken.address.toLowerCase()}&toTokenAddress=${fromStable.toLowerCase()}&amount=${amount}`
       );
       const res1 = await data1.json();
-      let amountOut1 = res1.toTokenAmount
-      console.log(amountOut1)
+      amounts.amountInTokens = ethers.utils.formatUnits(res1.toTokenAmount, 6).toString()
+    }
 
+    if(toChainDexRequired) {
       const data2 = await fetch(
-        `https://api.1inch.exchange/v4.0/${toChain.chainId}/quote?fromTokenAddress=${toStable}&toTokenAddress=${toToken.address}&amount=${amountOut1}`
+        `https://api.1inch.exchange/v4.0/${toChain.chainId}/quote?fromTokenAddress=${toStable.toLowerCase()}&toTokenAddress=${toToken.address.toLowerCase()}&amount=${ethers.utils.parseUnits(amounts.amountInTokens, toToken.decimals).toString()}`
       );
       const res2 = await data2.json();
       let amountOut2 = res2.toTokenAmount
       console.log(amountOut2)
 
-      amounts.fees = amountOut2 * 0.001;
-      amounts.amountInTokens = amountOut2 * 0.999;
+      amounts.fees = ethers.utils.formatUnits((amountOut2 * 0.001).toString(), toToken.decimals);
+      console.log(amountOut2, "dsa")
+      amounts.amountInTokens = ethers.utils.formatUnits((amountOut2 * 0.999).toFixed(0), toToken.decimals).toString().toString()
+    } else if (bridgeTokens.includes(toToken.symbol)) {
+      amounts.fees = (Number(ethers.utils.parseUnits(amount, toToken.decimals)) * 0.001).toString();
+      amounts.amountInTokens = ethers.utils.parseUnits(eval(`${amount} * 0.999`).toString(), toToken.decimals).toString();
     }
+
+    // if (bridgeTokens.includes(fromToken.name) || bridgeTokens.includes(toToken.name)) {
+
+    //   amounts.fees = amount * 10**6 * 0.001;
+    //   amounts.amountInTokens = amount * 10**6 *0.999;
+
+    // } else if (fromChainDexRequired && !toChainDexRequired) {
+
+    //   const data = await fetch(
+    //     `https://api.1inch.exchange/v4.0/${fromChain.chainId}/quote?fromTokenAddress=${fromToken.address}&toTokenAddress=${fromStable}&amount=${amount}`
+    //   );
+    //   const res = await data.json();
+    //   let amountOut = res.toTokenAmount
+    //   console.log(amountOut)
+
+    //   amounts.fees = amountOut * 0.001;
+    //   amounts.amountInTokens = amountOut * 0.999;
+
+    // } else if (toChainDexRequired && !fromChainDexRequired) {
+
+    //   const data = await fetch(
+    //     `https://api.1inch.exchange/v4.0/${toChain.chainId}/quote?fromTokenAddress=${toStable}&toTokenAddress=${toToken.address}&amount=${amount}`
+    //   );
+    //   const res = await data.json();
+    //   let amountOut = res.toTokenAmount
+    //   console.log(amountOut)
+      
+    //   amounts.fees = amountOut * 0.001;
+    //   amounts.amountInTokens = amountOut * 0.999;
+      
+    // } else {
+
+      
+
+    //   const data2 = await fetch(
+    //     `https://api.1inch.exchange/v4.0/${toChain.chainId}/quote?fromTokenAddress=${toStable}&toTokenAddress=${toToken.address}&amount=${amountOut1}`
+    //   );
+    //   const res2 = await data2.json();
+    //   let amountOut2 = res2.toTokenAmount
+    //   console.log(amountOut2)
+
+    //   amounts.fees = amountOut2 * 0.001;
+    //   amounts.amountInTokens = amountOut2 * 0.999;
+    // }
 
     return amounts
 

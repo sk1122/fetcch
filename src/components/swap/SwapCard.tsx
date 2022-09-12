@@ -40,7 +40,7 @@ const SwapCard = () => {
   );
   const [fees, setFees] = useState('0')
 
-  const { estimateFees, swap } = useBridge();
+  const { estimateAmountOut, swap } = useBridge();
 
   // @ts-ignore
   const [fromCoin, setFromCoin] = useState(coins[fromChain.internalId][0]);
@@ -96,8 +96,8 @@ const SwapCard = () => {
 
   useEffect(() => {
     if (fromCoin && toCoin && fromChain && toChain && fromAmount) {
-      estimateFees(fromCoin as any, toCoin as any, Number(fromAmount)).then(
-        (a) => {setToAmount(a.amountOut.toString());setFees(a.fees.toString())}
+      estimateAmountOut(fromChain, toChain, fromCoin, toCoin, fromAmount).then(
+        (a) => {setToAmount(a.amountInTokens.toString());setFees(a.fees.toString())}
       );
     }
   }, [fromCoin, toCoin, fromChain, toChain, fromAmount]);
@@ -215,7 +215,7 @@ const SwapCard = () => {
 								type="number"
 								name="amount"
 								id="amount"
-								value={toAmount}
+								value={Number(toAmount).toFixed(2)}
 								className="block h-10 w-3/5 rounded-l-md border-none bg-white pl-7 text-black outline-none sm:text-sm"
 								placeholder="0.00"
 								disabled
@@ -232,7 +232,7 @@ const SwapCard = () => {
 							</div>
 						</div>
 					</div>
-					<p className="text-md text-gray-500">Fees - {fees} {toCoin?.name}</p>
+					<p className="text-md text-gray-500">Fees - {Number(fees).toFixed(2)} {toCoin?.name}</p>
 				</div>
 			</div>
 
