@@ -178,9 +178,9 @@ export const useBridge = () => {
     if(toChainDexRequired) {
       amounts.fees = (Number(ethers.utils.formatUnits(amounts.amountInTokens, fromStable.decimals)) * 0.001).toFixed(0)
       amounts.amountInTokens = BigNumber.from(amounts.amountInTokens).sub(ethers.utils.parseUnits(amounts.fees, fromStable.decimals)).toString()
-
+      console.log(ethers.utils.parseUnits(Number(ethers.utils.formatUnits(amounts.amountInTokens, fromStable.decimals)).toFixed(0), toStable.decimals).toString())
       const res = await fetch(
-        `https://api.1inch.exchange/v4.0/${toChain.chainId}/quote?fromTokenAddress=${toStable.address.toLowerCase()}&toTokenAddress=${toToken.address.toLowerCase()}&amount=${ethers.utils.parseUnits(amounts.amountInTokens, (Number(toStable.decimals) - Number(fromStable.decimals)))}`
+        `https://api.1inch.exchange/v4.0/${toChain.chainId}/quote?fromTokenAddress=${toStable.address.toLowerCase()}&toTokenAddress=${toToken.address.toLowerCase()}&amount=${ethers.utils.parseUnits(Number(ethers.utils.formatUnits(amounts.amountInTokens, fromStable.decimals)).toFixed(0), toStable.decimals).toString()}`
       )
 
       const data = await res.json()
@@ -198,76 +198,7 @@ export const useBridge = () => {
       return amounts
     }
 
-    // if(fromChainDexRequired) {
-    //   const data1 = await fetch(
-    //     `https://api.1inch.exchange/v4.0/${fromChain.chainId}/quote?fromTokenAddress=${fromToken.address.toLowerCase()}&toTokenAddress=${fromStable.toLowerCase()}&amount=${amount}`
-    //   );
-    //   const res1 = await data1.json();
-    //   amounts.amountInTokens = ethers.utils.formatUnits(res1.toTokenAmount, 6).toString()
-    // }
-
-    // if(toChainDexRequired) {
-    //   const data2 = await fetch(
-    //     `https://api.1inch.exchange/v4.0/${toChain.chainId}/quote?fromTokenAddress=${toStable.toLowerCase()}&toTokenAddress=${toToken.address.toLowerCase()}&amount=${ethers.utils.parseUnits(amounts.amountInTokens, toToken.decimals).toString()}`
-    //   );
-    //   const res2 = await data2.json();
-    //   let amountOut2 = res2.toTokenAmount
-    //   console.log(amountOut2)
-
-    //   amounts.fees = ethers.utils.formatUnits((amountOut2 * 0.001).toString(), toToken.decimals);
-    //   console.log(amountOut2, "dsa")
-    //   amounts.amountInTokens = ethers.utils.formatUnits((amountOut2 * 0.999).toFixed(0), toToken.decimals).toString().toString()
-    // } else if (bridgeTokens.includes(toToken.symbol)) {
-    //   amounts.fees = (Number(ethers.utils.parseUnits(amount, toToken.decimals)) * 0.001).toString();
-    //   amounts.amountInTokens = ethers.utils.parseUnits(eval(`${amount} * 0.999`).toString(), toToken.decimals).toString();
-    // }
-
-    // if (bridgeTokens.includes(fromToken.name) || bridgeTokens.includes(toToken.name)) {
-
-    //   amounts.fees = amount * 10**6 * 0.001;
-    //   amounts.amountInTokens = amount * 10**6 *0.999;
-
-    // } else if (fromChainDexRequired && !toChainDexRequired) {
-
-    //   const data = await fetch(
-    //     `https://api.1inch.exchange/v4.0/${fromChain.chainId}/quote?fromTokenAddress=${fromToken.address}&toTokenAddress=${fromStable}&amount=${amount}`
-    //   );
-    //   const res = await data.json();
-    //   let amountOut = res.toTokenAmount
-    //   console.log(amountOut)
-
-    //   amounts.fees = amountOut * 0.001;
-    //   amounts.amountInTokens = amountOut * 0.999;
-
-    // } else if (toChainDexRequired && !fromChainDexRequired) {
-
-    //   const data = await fetch(
-    //     `https://api.1inch.exchange/v4.0/${toChain.chainId}/quote?fromTokenAddress=${toStable}&toTokenAddress=${toToken.address}&amount=${amount}`
-    //   );
-    //   const res = await data.json();
-    //   let amountOut = res.toTokenAmount
-    //   console.log(amountOut)
-      
-    //   amounts.fees = amountOut * 0.001;
-    //   amounts.amountInTokens = amountOut * 0.999;
-      
-    // } else {
-
-      
-
-    //   const data2 = await fetch(
-    //     `https://api.1inch.exchange/v4.0/${toChain.chainId}/quote?fromTokenAddress=${toStable}&toTokenAddress=${toToken.address}&amount=${amountOut1}`
-    //   );
-    //   const res2 = await data2.json();
-    //   let amountOut2 = res2.toTokenAmount
-    //   console.log(amountOut2)
-
-    //   amounts.fees = amountOut2 * 0.001;
-    //   amounts.amountInTokens = amountOut2 * 0.999;
-    // }
-
     return amounts
-
   }
 
 
