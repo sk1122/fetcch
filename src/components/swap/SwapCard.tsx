@@ -96,7 +96,7 @@ const SwapCard = () => {
 
   useEffect(() => {
     if (fromCoin && toCoin && fromChain && toChain && fromAmount) {
-      estimateAmountOut(fromChain, toChain, fromCoin, toCoin, fromAmount).then(
+      estimateAmountOut(fromChain, toChain, fromCoin, toCoin, ethers.utils.parseUnits(fromAmount, fromCoin.decimals).toString()).then(
         (a) => {setToAmount(a.amountInTokens.toString());setFees(a.fees.toString())}
       );
     }
@@ -215,7 +215,8 @@ const SwapCard = () => {
 								type="number"
 								name="amount"
 								id="amount"
-								value={Number(toAmount).toFixed(2)}
+                //@ts-ignore
+								value={toAmount.split(".").length > 1 ? toAmount.split(".")[0] + "." + toAmount.split(".")[1]?.substring(0, 2) : toAmount}
 								className="block h-10 w-3/5 rounded-l-md border-none bg-white pl-7 text-black outline-none sm:text-sm"
 								placeholder="0.00"
 								disabled

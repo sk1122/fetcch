@@ -145,8 +145,6 @@ export const useBridge = () => {
     toToken: any,
     amount: string
   ): Promise<Return> =>{
-    amount = ethers.utils.parseUnits(amount.toString(), fromToken.decimals).toString()
-
     const bridgeTokens: any = ["USDC", "USDT","BUSD"];
     let fromChainDexRequired = false;
     let toChainDexRequired = false;
@@ -154,39 +152,75 @@ export const useBridge = () => {
     if (!bridgeTokens.includes(fromToken.symbol)) fromChainDexRequired = true;
     if (!bridgeTokens.includes(toToken.symbol)) toChainDexRequired = true;
 
-    const fromStable = fromChain.internalId === 3 ? getTokenByName('BUSD', '3').address : getTokenByName('USDC', fromChain.internalId.toString()).address
-    const toStable = toChain.internalId === 3 ? getTokenByName('BUSD', '3').address : getTokenByName('USDC', toChain.internalId.toString()).address
-      
+    const fromStable = fromChain.internalId === 3 ? getTokenByName('BUSD', '3') : getTokenByName('USDC', fromChain.internalId.toString())
+    const toStable = toChain.internalId === 3 ? getTokenByName('BUSD', '3') : getTokenByName('USDC', toChain.internalId.toString())
+    
     const amounts: Return = {
       fees: '0',
       amountInTokens: amount
     };
 
-    console.log(amounts)
-
     if(fromChainDexRequired) {
-      const data1 = await fetch(
-        `https://api.1inch.exchange/v4.0/${fromChain.chainId}/quote?fromTokenAddress=${fromToken.address.toLowerCase()}&toTokenAddress=${fromStable.toLowerCase()}&amount=${amount}`
-      );
-      const res1 = await data1.json();
-      amounts.amountInTokens = ethers.utils.formatUnits(res1.toTokenAmount, 6).toString()
+      const res = await fetch(
+        `https://api.1inch.exchange/v4.0/${fromChain.chainId}/quote?fromTokenAddress=${fromToken.address.toLowerCase()}&toTokenAddress=${fromStable.address.toLowerCase()}&amount=${amount}`
+      )
+      const data = await res.json()
+
+      console.log(data.toTokenAmount)
+
+      amounts.amountInTokens = data.toTokenAmount
+
+      console.log(amounts)
     }
+
+    console.log(fromStable.decimals, toStable)
 
     if(toChainDexRequired) {
-      const data2 = await fetch(
-        `https://api.1inch.exchange/v4.0/${toChain.chainId}/quote?fromTokenAddress=${toStable.toLowerCase()}&toTokenAddress=${toToken.address.toLowerCase()}&amount=${ethers.utils.parseUnits(amounts.amountInTokens, toToken.decimals).toString()}`
-      );
-      const res2 = await data2.json();
-      let amountOut2 = res2.toTokenAmount
-      console.log(amountOut2)
+      amounts.fees = (Number(ethers.utils.formatUnits(amounts.amountInTokens, fromStable.decimals)) * 0.001).toFixed(0)
+      amounts.amountInTokens = BigNumber.from(amounts.amountInTokens).sub(ethers.utils.parseUnits(amounts.fees, fromStable.decimals)).toString()
 
-      amounts.fees = ethers.utils.formatUnits((amountOut2 * 0.001).toString(), toToken.decimals);
-      console.log(amountOut2, "dsa")
-      amounts.amountInTokens = ethers.utils.formatUnits((amountOut2 * 0.999).toFixed(0), toToken.decimals).toString().toString()
-    } else if (bridgeTokens.includes(toToken.symbol)) {
-      amounts.fees = (Number(ethers.utils.parseUnits(amount, toToken.decimals)) * 0.001).toString();
-      amounts.amountInTokens = ethers.utils.parseUnits(eval(`${amount} * 0.999`).toString(), toToken.decimals).toString();
+      const res = await fetch(
+        `https://api.1inch.exchange/v4.0/${toChain.chainId}/quote?fromTokenAddress=${toStable.address.toLowerCase()}&toTokenAddress=${toToken.address.toLowerCase()}&amount=${ethers.utils.parseUnits(amounts.amountInTokens, (Number(toStable.decimals) - Number(fromStable.decimals)))}`
+      )
+
+      const data = await res.json()
+
+      console.log(amounts, data)
+
+      amounts.amountInTokens = ethers.utils.formatUnits(data.toTokenAmount, data.toToken.decimals)
+    } else {
+      console.log(amounts)
+      amounts.fees = (Number(ethers.utils.formatUnits(amounts.amountInTokens, fromStable.decimals)) * 0.001).toFixed(0)
+      amounts.amountInTokens = BigNumber.from(amounts.amountInTokens).sub(ethers.utils.parseUnits(amounts.fees, fromStable.decimals)).toString()
+
+      amounts.amountInTokens = ethers.utils.formatUnits(amounts.amountInTokens, fromStable.decimals)
+
+      return amounts
     }
+
+    // if(fromChainDexRequired) {
+    //   const data1 = await fetch(
+    //     `https://api.1inch.exchange/v4.0/${fromChain.chainId}/quote?fromTokenAddress=${fromToken.address.toLowerCase()}&toTokenAddress=${fromStable.toLowerCase()}&amount=${amount}`
+    //   );
+    //   const res1 = await data1.json();
+    //   amounts.amountInTokens = ethers.utils.formatUnits(res1.toTokenAmount, 6).toString()
+    // }
+
+    // if(toChainDexRequired) {
+    //   const data2 = await fetch(
+    //     `https://api.1inch.exchange/v4.0/${toChain.chainId}/quote?fromTokenAddress=${toStable.toLowerCase()}&toTokenAddress=${toToken.address.toLowerCase()}&amount=${ethers.utils.parseUnits(amounts.amountInTokens, toToken.decimals).toString()}`
+    //   );
+    //   const res2 = await data2.json();
+    //   let amountOut2 = res2.toTokenAmount
+    //   console.log(amountOut2)
+
+    //   amounts.fees = ethers.utils.formatUnits((amountOut2 * 0.001).toString(), toToken.decimals);
+    //   console.log(amountOut2, "dsa")
+    //   amounts.amountInTokens = ethers.utils.formatUnits((amountOut2 * 0.999).toFixed(0), toToken.decimals).toString().toString()
+    // } else if (bridgeTokens.includes(toToken.symbol)) {
+    //   amounts.fees = (Number(ethers.utils.parseUnits(amount, toToken.decimals)) * 0.001).toString();
+    //   amounts.amountInTokens = ethers.utils.parseUnits(eval(`${amount} * 0.999`).toString(), toToken.decimals).toString();
+    // }
 
     // if (bridgeTokens.includes(fromToken.name) || bridgeTokens.includes(toToken.name)) {
 
