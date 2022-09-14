@@ -1,7 +1,5 @@
-import type { Coin } from '@/types';
 import { BigNumber, ethers } from 'ethers';
-import { Chain, getTokenByName, Token } from 'fetcch-chain-data';
-import { chainId } from 'wagmi';
+import { Chain, getTokenByName } from 'fetcch-chain-data';
 
 interface Return {
   fees: string;
@@ -52,8 +50,8 @@ export const useBridge = () => {
         !(fromToken.symbol === 'USDC' || fromToken.symbol === 'BUSD')
       ],
       [
-        toToken.address,
         toChain.internalId === 3 ? getTokenByName('BUSD', '3').address : getTokenByName('USDC', toChain.internalId.toString()).address,
+        toToken.address,
         destination,
         !(toToken.symbol === 'USDC' || toToken.symbol === 'BUSD')
       ],
