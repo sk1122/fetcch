@@ -1,6 +1,7 @@
 import { Switch, Transition } from '@headlessui/react';
 import React, { useEffect, useState } from 'react';
 import { useAccount, useSigner } from 'wagmi';
+import { useGetTransactionData } from "../../hooks/getTransactions"
 
 import { useBridge } from '@/hooks/useBridge';
 import { Swap } from '@/icons/swap';
@@ -13,6 +14,7 @@ import { ethers } from 'ethers';
 import { getChains, getTokens } from "fetcch-chain-data";
 import type {Chain} from "fetcch-chain-data";
 import TokenListComp from '../tokenlist';
+import {toast} from 'react-hot-toast';
 
 const chainList: Chain[] = [...getChains()];
 
@@ -29,6 +31,7 @@ export interface TokenInterface {
 }
 
 const SwapCard = () => {
+
   const { address } = useAccount();
   const [toggle2, _setToggle2] = useState(true);
   const [fromChain, setFromChain] = useState(chainList[0] as Chain);
@@ -41,6 +44,7 @@ const SwapCard = () => {
   const [fees, setFees] = useState('0')
 
   const { estimateAmountOut, swap } = useBridge();
+  const { setHash } = useGetTransactionData();
 
   // @ts-ignore
   const [fromCoin, setFromCoin] = useState(coins[fromChain.internalId][0]);
@@ -97,10 +101,12 @@ const SwapCard = () => {
   useEffect(() => {
     if (fromCoin && toCoin && fromChain && toChain && fromAmount) {
       estimateAmountOut(fromChain, toChain, fromCoin, toCoin, ethers.utils.parseUnits(fromAmount, fromCoin.decimals).toString()).then(
-        (a) => {setToAmount(a.amountInTokens.toString());setFees(a.fees.toString())}
+        (a) => {setToAmount(a.amountOut.toString());setFees(a.fees.toString())}
       );
     }
   }, [fromCoin, toCoin, fromChain, toChain, fromAmount]);
+
+  // useEffect(() => {toast.success("successful")}, []);
 
 	const { data: signer } = useSigner();
 
@@ -120,6 +126,8 @@ const SwapCard = () => {
 
 			const tx = await swap(toggle2 ? receiver : await signer.getAddress(), fromChain, toChain, fromCoin, toCoin, ethers.utils.parseUnits(fromAmount, fromCoin.decimals).toString(), signer)
 			console.log(tx)
+      setHash(tx);
+
 		}
 	}
 
@@ -233,7 +241,7 @@ const SwapCard = () => {
 							</div>
 						</div>
 					</div>
-					<p className="text-md text-gray-500">Fees - {Number(fees).toFixed(2)} {toCoin?.name}</p>
+					<p className="text-md text-gray-500">Fees - {Number(fees).toFixed(2)} {"USDT"}</p>
 				</div>
 			</div>
 
