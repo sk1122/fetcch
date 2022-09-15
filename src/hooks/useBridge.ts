@@ -1,9 +1,11 @@
 import { BigNumber, ethers } from 'ethers';
 import { Chain, getTokenByName } from 'fetcch-chain-data';
+import { checkAndGetApproval } from './approval';
+import { Fetcch_poly, Fetcch_bnb } from '../components/tokenlist/DefaultList'
 
 interface Return {
   fees: string;
-  amountInTokens: string;
+  amountOut: string;
 }
 
 const abi = [{"inputs":[{"internalType":"address","name":"_pool","type":"address"},{"internalType":"address","name":"_dex","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"inputs":[{"internalType":"address","name":"_dex","type":"address"}],"name":"changeDex","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_pool","type":"address"}],"name":"changePool","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"dex","outputs":[{"internalType":"contract UniV2Provider","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint16","name":"_fromChainID","type":"uint16"},{"internalType":"uint16","name":"_toChainID","type":"uint16"}],"name":"getNonce","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"pool","outputs":[{"internalType":"contract FetcchPool","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"tokenAddr","type":"address"}],"name":"rescueFunds","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"components":[{"internalType":"address","name":"_refundAd","type":"address"},{"components":[{"internalType":"address","name":"_fromToken","type":"address"},{"internalType":"address","name":"_toToken","type":"address"},{"internalType":"uint256","name":"_amount","type":"uint256"},{"internalType":"bool","name":"dexRequired","type":"bool"}],"internalType":"struct FetcchBridge.fromChainData","name":"_fromChain","type":"tuple"},{"components":[{"internalType":"address","name":"_fromToken","type":"address"},{"internalType":"address","name":"_toToken","type":"address"},{"internalType":"bytes","name":"_destination","type":"bytes"},{"internalType":"bool","name":"dexRequired","type":"bool"}],"internalType":"struct FetcchBridge.toChainData","name":"_toChain","type":"tuple"},{"internalType":"address","name":"_receiver","type":"address"},{"internalType":"uint16","name":"_fromChainID","type":"uint16"},{"internalType":"uint16","name":"_toChainID","type":"uint16"}],"internalType":"struct FetcchBridge.swapData","name":"_swapData","type":"tuple"}],"name":"swap","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"}];
@@ -23,20 +25,19 @@ export const useBridge = () => {
 		'137': '0x6fB5dd7f24E6B85E7e8019C40b9E628B0BA86EE0',
 		'56': '0xD187329cEAe8F0f08d7fbb51444ac301B0908616'
 	}
-
-	const addresses: any = {
-		'137': '0x423e25c00eA0fDD65a9dC104dD7996842e66d94e',
-		'56': '0xEF16C64E352b97518958Ae9C3D81a5d53c602F0B'
-	}
 	
 	const lzId: any = {
 		'137': 109,
 		'56': 102
 	}
 
-  //remoteAdr -> toChain lz impl address
-	//localAdr -> fromChain lz impl address
-	//const destination = ethers.utils.solidityPack(["address", "address"], [remoteAdr, localAdr]);
+  const addresses: any = {
+    137: '0x423e25c00eA0fDD65a9dC104dD7996842e66d94e',
+    56: '0xEF16C64E352b97518958Ae9C3D81a5d53c602F0B'
+  };
+
+  await checkAndGetApproval(addresses[fromChain.chainId], fromToken, amount, signer);
+
 	const destination = ethers.utils.solidityPack(["address", "address"], [addr2[toChain.chainId], addr2[fromChain.chainId]]);
 
     const contract = new ethers.Contract(addresses[fromChain.chainId], abi, signer);
@@ -45,15 +46,15 @@ export const useBridge = () => {
       await signer.getAddress(),
       [
         fromToken.address,
-        fromChain.internalId === 3 ? getTokenByName('BUSD', '3').address : getTokenByName('USDC', fromChain.internalId.toString()).address,
+        fromChain.internalId === 3 ? Fetcch_bnb.address : Fetcch_poly.address,
         amount,
-        !(fromToken.symbol === 'USDC' || fromToken.symbol === 'BUSD')
+        !(fromToken.symbol === 'USDC' || fromToken.symbol === 'BUSD'  || fromToken.symbol === 'FTST')
       ],
       [
-        toChain.internalId === 3 ? getTokenByName('BUSD', '3').address : getTokenByName('USDC', toChain.internalId.toString()).address,
+        toChain.internalId === 3 ? Fetcch_bnb.address : Fetcch_poly.address,
         toToken.address,
         destination,
-        !(toToken.symbol === 'USDC' || toToken.symbol === 'BUSD')
+        !(toToken.symbol === 'USDC' || toToken.symbol === 'BUSD' || fromToken.symbol === 'FTST')
       ],
       receiver,
       lzId[fromChain.chainId],
@@ -66,8 +67,9 @@ export const useBridge = () => {
 
 	console.log(swapdata, "swapData")
 
-    const tx = await contract.swap(swapdata, {value: ethers.utils.parseEther(fromChain.internalId === 3 ? '0.01' : fromChain.internalId === 2 ? '2' : '0'), gasPrice: signer.provider?.getGasPrice(), gasLimit: 15000000});
-    await tx;
+    const tx = await contract.swap(swapdata, {value: ethers.utils.parseEther(fromChain.internalId === 3 ? '0.01' : fromChain.internalId === 2 ? '2' : '0'), gasPrice: signer.provider?.getGasPrice(), gasLimit: 1500000});
+    await tx.wait();
+    return tx.hash;
   }
 
   // const estimateFees = async (
@@ -143,7 +145,7 @@ export const useBridge = () => {
     toToken: any,
     amount: string
   ): Promise<Return> =>{
-    const bridgeTokens: any = ["USDC", "USDT","BUSD"];
+    const bridgeTokens: any = ["USDC", "USDT","BUSD", "FTST"];
     let fromChainDexRequired = false;
     let toChainDexRequired = false;
 
@@ -155,7 +157,7 @@ export const useBridge = () => {
     
     const amounts: Return = {
       fees: '0',
-      amountInTokens: amount
+      amountOut: amount
     };
 
     if(fromChainDexRequired) {
@@ -165,8 +167,10 @@ export const useBridge = () => {
       const data = await res.json()
 
       console.log(data.toTokenAmount)
-
-      amounts.amountInTokens = data.toTokenAmount
+      
+      amounts.amountOut = data.toTokenAmount
+      amounts.fees = (Number(ethers.utils.formatUnits(amounts.amountOut, fromStable.decimals)) * 0.001).toFixed(0)
+      
 
       console.log(amounts)
     }
@@ -174,24 +178,24 @@ export const useBridge = () => {
     console.log(fromStable.decimals, toStable)
 
     if(toChainDexRequired) {
-      amounts.fees = (Number(ethers.utils.formatUnits(amounts.amountInTokens, fromStable.decimals)) * 0.001).toFixed(0)
-      amounts.amountInTokens = BigNumber.from(amounts.amountInTokens).sub(ethers.utils.parseUnits(amounts.fees, fromStable.decimals)).toString()
-      console.log(ethers.utils.parseUnits(Number(ethers.utils.formatUnits(amounts.amountInTokens, fromStable.decimals)).toFixed(0), toStable.decimals).toString())
+      amounts.fees = (Number(ethers.utils.formatUnits(amounts.amountOut, fromStable.decimals)) * 0.001).toFixed(0)
+      amounts.amountOut = BigNumber.from(amounts.amountOut).sub(ethers.utils.parseUnits(amounts.fees, fromStable.decimals)).toString()
+      console.log(ethers.utils.parseUnits(Number(ethers.utils.formatUnits(amounts.amountOut, fromStable.decimals)).toFixed(0), toStable.decimals).toString())
       const res = await fetch(
-        `https://api.1inch.exchange/v4.0/${toChain.chainId}/quote?fromTokenAddress=${toStable.address.toLowerCase()}&toTokenAddress=${toToken.address.toLowerCase()}&amount=${ethers.utils.parseUnits(Number(ethers.utils.formatUnits(amounts.amountInTokens, fromStable.decimals)).toFixed(0), toStable.decimals).toString()}`
+        `https://api.1inch.exchange/v4.0/${toChain.chainId}/quote?fromTokenAddress=${toStable.address.toLowerCase()}&toTokenAddress=${toToken.address.toLowerCase()}&amount=${ethers.utils.parseUnits(Number(ethers.utils.formatUnits(amounts.amountOut, fromStable.decimals)).toFixed(0), toStable.decimals).toString()}`
       )
 
       const data = await res.json()
 
       console.log(amounts, data)
 
-      amounts.amountInTokens = ethers.utils.formatUnits(data.toTokenAmount, data.toToken.decimals)
+      amounts.amountOut = ethers.utils.formatUnits(data.toTokenAmount, data.toToken.decimals)
     } else {
       console.log(amounts)
-      amounts.fees = (Number(ethers.utils.formatUnits(amounts.amountInTokens, fromStable.decimals)) * 0.001).toFixed(0)
-      amounts.amountInTokens = BigNumber.from(amounts.amountInTokens).sub(ethers.utils.parseUnits(amounts.fees, fromStable.decimals)).toString()
+      amounts.fees = (Number(ethers.utils.formatUnits(amounts.amountOut, fromStable.decimals)) * 0.001).toFixed(0)
+      amounts.amountOut = BigNumber.from(amounts.amountOut).sub(ethers.utils.parseUnits(amounts.fees, fromStable.decimals)).toString()
 
-      amounts.amountInTokens = ethers.utils.formatUnits(amounts.amountInTokens, fromStable.decimals)
+      amounts.amountOut = ethers.utils.formatUnits(amounts.amountOut, fromStable.decimals)
 
       return amounts
     }

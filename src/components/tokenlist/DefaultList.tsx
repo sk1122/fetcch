@@ -2,7 +2,7 @@ import { Chain } from 'fetcch-chain-data';
 import { useEffect, useState } from 'react';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { TokenInterface } from '../swap/SwapCard';
-import { getTokenByName } from 'fetcch-chain-data'
+// import { getTokenByName } from 'fetcch-chain-data'
 
 
 import Token from './token';
@@ -20,11 +20,30 @@ interface Props {
   setTokens: Function
 }
 
+export const Fetcch_bnb = {
+  "name": "FetcchTEST TOKEN",
+  "symbol": "FTST",
+  "address": "0x0F20970D15cBF09abb3569F26Df55684e9A433cc",
+  "chainId": 56,
+  "decimals": 18,
+  "logoURI": "https://pbs.twimg.com/profile_images/1556605149287948288/mhGJXWHS_400x400.jpg"
+}
+
+export const Fetcch_poly = {
+  "name": "FetcchTEST TOKEN",
+  "symbol": "FTST",
+  "address": "0x120854B8eC9F2Fd19218F04D2DD37bEEB5282656",
+  "chainId": 137,
+  "decimals": 18,
+  "logoURI": "https://pbs.twimg.com/profile_images/1556605149287948288/mhGJXWHS_400x400.jpg"
+}
+
 const DefaultTokenList = ({ tokens, tokenValue, setFromCoin, setToCoin, setShowTokenList, showTokenList, toChain, fromChain, setTokens }: Props) => {
+  
   const [searchToken, setSearchToken] = useState<string>('');
   const [tokenOnScrenIndex, setTokenOnScreenIndex] = useState(10);
-  const [defaultTokens] = useState(fromChain.internalId === 3 ? [getTokenByName('BUSD', '3'), getTokenByName('WBNB', '3')] : [getTokenByName('USDT', fromChain.internalId.toString()), getTokenByName('USDC', fromChain.internalId.toString())])
-  const [defaultToTokens] = useState(toChain.internalId === 3 ? [getTokenByName('BUSD', '3'), getTokenByName('WBNB', '3')] : [getTokenByName('USDT', fromChain.internalId.toString()), getTokenByName('USDC', fromChain.internalId.toString())])
+  const [defaultTokens] = useState(fromChain.internalId === 3 ? [Fetcch_bnb] : [Fetcch_poly])
+  const [defaultToTokens] = useState(toChain.internalId === 3 ? [Fetcch_bnb] : [Fetcch_poly])
 
   useEffect(() => {
     if(tokenValue == "from") {
