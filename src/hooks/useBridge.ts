@@ -151,6 +151,7 @@ export const useBridge = () => {
 
     if (!bridgeTokens.includes(fromToken.symbol)) fromChainDexRequired = true;
     if (!bridgeTokens.includes(toToken.symbol)) toChainDexRequired = true;
+    console.log(fromChainDexRequired, toChainDexRequired)
 
     const fromStable = fromChain.internalId === 3 ? getTokenByName('BUSD', '3') : getTokenByName('USDC', fromChain.internalId.toString())
     const toStable = toChain.internalId === 3 ? getTokenByName('BUSD', '3') : getTokenByName('USDC', toChain.internalId.toString())

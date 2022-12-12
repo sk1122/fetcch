@@ -34,7 +34,7 @@ const SwapCard = () => {
 
   const { address } = useAccount();
   const [toggle2, _setToggle2] = useState(true);
-  const [fromChain, setFromChain] = useState(chainList[0] as Chain);
+  const [fromChain, setFromChain] = useState(chainList[2] as Chain);
   const [toChain, setToChain] = useState(chainList[1] as Chain);
   const [receiver, setReceiver] = useState('');
   const [fromChainList, setFromChainList] = useState(chainList.filter(chain => chain.name !== fromChain.name));
@@ -100,6 +100,15 @@ const SwapCard = () => {
 
   useEffect(() => {
     if (fromCoin && toCoin && fromChain && toChain && fromAmount) {
+      console.log(toCoin.symbol.startsWith("FTST"), fromAmount, "das")
+      if(fromCoin.symbol.startsWith('FTST') && toCoin.symbol.startsWith('FTST')) {
+        const fees = Number(fromAmount) * 0.001
+        
+        setToAmount((Number(fromAmount) - fees).toString())
+        setFees(fees.toString())
+        return
+      }
+      
       estimateAmountOut(fromChain, toChain, fromCoin, toCoin, ethers.utils.parseUnits(fromAmount, fromCoin.decimals).toString()).then(
         (a) => {setToAmount(a.amountOut.toString());setFees(a.fees.toString())}
       );
@@ -241,7 +250,7 @@ const SwapCard = () => {
 							</div>
 						</div>
 					</div>
-					<p className="text-md text-gray-500">Fees - {Number(fees).toFixed(2)} {"USDT"}</p>
+					<p className="text-md text-gray-500">Fees - {Number(fees).toFixed(2)} {fromCoin.symbol}</p>
 				</div>
 			</div>
 
