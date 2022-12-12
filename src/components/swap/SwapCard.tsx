@@ -1,5 +1,5 @@
 import { Switch, Transition } from '@headlessui/react';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAccount, useSigner } from 'wagmi';
 import { useGetTransactionData } from "../../hooks/getTransactions"
 
@@ -14,7 +14,6 @@ import { ethers } from 'ethers';
 import { getChains, getTokens } from "fetcch-chain-data";
 import type {Chain} from "fetcch-chain-data";
 import TokenListComp from '../tokenlist';
-import {toast} from 'react-hot-toast';
 
 const chainList: Chain[] = [...getChains()];
 
