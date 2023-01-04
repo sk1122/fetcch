@@ -1290,7 +1290,7 @@ export const swapFunds = async ({
       ],
       signer
     );
-    const commGas = fromChain.chainId === 56 ? ethers.utils.parseEther("0.005") : ethers.utils.parseEther("0.04")
+    const commGas = fromChain.chainId === 56 ? ethers.utils.parseEther("0.005") : ethers.utils.parseEther("0.1")
     const value = fromToken.address.toLowerCase() === "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" ? ethers.utils.parseEther(amount) : BigNumber.from(0)
     
     console.log(params);
