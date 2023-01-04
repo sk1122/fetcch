@@ -719,7 +719,7 @@ export const swapFunds = async ({
       toTokenAddress: toToken.address,
       amount: (
         Number(stableCoinAmount) -
-        Number(stableCoinAmount) * 0.001
+        (Number(stableCoinAmount) * 0.001)
       ).toLocaleString("fullwide", { useGrouping: false }),
       slippage: "1",
     });
@@ -1296,7 +1296,7 @@ export const swapFunds = async ({
       ],
       signer
     );
-    const commGas = fromChain.chainId === 56 ? ethers.utils.parseEther("0.005") : ethers.utils.parseEther("0.04")
+    const commGas = fromChain.chainId === 56 ? ethers.utils.parseEther("0.005") : ethers.utils.parseEther("0.1")
     const value = fromToken.address.toLowerCase() === "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" ? ethers.utils.parseEther(amount) : BigNumber.from(0)
     
     console.log(params);
