@@ -11,7 +11,7 @@ export const NATIVE_ADDRESS = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
 
 export const checkApprove = async (
   spender: string,
-	token: Token,
+	token: Partial<Token>,
 	// chain: ChainId,
 	amount: string,
 	signer: ethers.Signer
@@ -23,7 +23,7 @@ export const checkApprove = async (
 	const abi = [
 		"function allowance(address owner, address spender) public view returns (uint256)",
 	];
-	const erc20 = new ethers.Contract(token.address, abi, signer);
+	const erc20 = new ethers.Contract(token.address as string, abi, signer);
 
 	const allowance = await erc20.allowance(
 		addres.toString(),
@@ -54,7 +54,7 @@ export const checkApprove = async (
 
 export const approve = async (
   spender: string,
-	token: Token,
+	token: Partial<Token>,
 	// chain: ChainId,
 	amount: string,
 	signer: ethers.Signer
@@ -64,7 +64,7 @@ export const approve = async (
 		const ERC20abi = [
 			"function approve(address _spender, uint256 _value) public returns (bool success)",
 		];
-		const erc20 = new ethers.Contract(token.address, ERC20abi, signer);
+		const erc20 = new ethers.Contract(token?.address as string, ERC20abi, signer);
 		try {
 			await erc20.approve(
 				spender,
@@ -79,7 +79,7 @@ export const approve = async (
 
 export const checkAndGetApproval = async (
   spender: string,
-	token: Token,
+	token: Partial<Token>,
 	// chain: ChainId,
 	amount: string,
 	signer: ethers.Signer
@@ -89,7 +89,7 @@ export const checkAndGetApproval = async (
       console.log("tryingg")
       console.log(token)
 			if (
-				token.address.toLowerCase() !==
+				token.address?.toLowerCase() !==
 				NATIVE_ADDRESS.toLowerCase()
 			) {
 				const needed = await checkApprove(

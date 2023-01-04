@@ -18,6 +18,7 @@ interface Props {
   toChain: Chain
   fromChain: Chain
   setTokens: Function
+  coins: any
 }
 
 export const Fetcch_bnb = {
@@ -38,12 +39,12 @@ export const Fetcch_poly = {
   "logoURI": "https://pbs.twimg.com/profile_images/1556605149287948288/mhGJXWHS_400x400.jpg"
 }
 
-const DefaultTokenList = ({ tokens, tokenValue, setFromCoin, setToCoin, setShowTokenList, showTokenList, toChain, fromChain, setTokens }: Props) => {
-  
+const DefaultTokenList = ({ coins, tokens, tokenValue, setFromCoin, setToCoin, setShowTokenList, showTokenList, toChain, fromChain, setTokens }: Props) => {
+  console.log(coins, fromChain, toChain, "coins")
   const [searchToken, setSearchToken] = useState<string>('');
   const [tokenOnScrenIndex, setTokenOnScreenIndex] = useState(10);
-  const [defaultTokens] = useState(fromChain.internalId === 3 ? [Fetcch_bnb] : [Fetcch_poly])
-  const [defaultToTokens] = useState(toChain.internalId === 3 ? [Fetcch_bnb] : [Fetcch_poly])
+  const [defaultTokens] = useState(coins[fromChain.internalId].slice(0, 4))
+  const [defaultToTokens] = useState(coins[toChain.internalId].slice(0, 4));
 
   useEffect(() => {
     if(tokenValue == "from") {

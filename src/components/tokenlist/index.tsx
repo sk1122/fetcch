@@ -2,12 +2,11 @@ import { Chain } from 'fetcch-chain-data';
 import {  useState } from 'react';
 import { AiOutlineClose } from 'react-icons/ai';
 import { IoMdArrowBack } from 'react-icons/io';
-import { coins } from '../swap/SwapCard';
-
 
 import DefaultTokenList from './DefaultList';
 
 interface Props {
+  coins: any[]
   tokenValue: string;
   setShowTokenList: Function
   setFromCoin: Function
@@ -18,14 +17,12 @@ interface Props {
 
 }
 
-const TokenListComp = ({ tokenValue, setShowTokenList, setFromCoin, setToCoin, showTokenList, toChain, fromChain }: Props) => {
+const TokenListComp = ({ coins, tokenValue, setShowTokenList, setFromCoin, setToCoin, showTokenList, toChain, fromChain }: Props) => {
   const [onMangaeTokenPage, setOnManageTokenPage] = useState(false);
+  console.log(coins, "token")
   const [tokens, setTokens] = useState<any| null>(Object.values(coins).map((list: any) => {
           return [...list]
   }).flat());
-
-
-
 
   return (
     <>
@@ -60,7 +57,7 @@ const TokenListComp = ({ tokenValue, setShowTokenList, setFromCoin, setToCoin, s
             </div>
             {/* body */}
             <div className="relative min-h-[500px] flex-auto space-y-3 py-2">
-              <DefaultTokenList setTokens={setTokens} toChain={toChain} fromChain={fromChain} setFromCoin={setFromCoin} setShowTokenList={setShowTokenList} setToCoin={setToCoin} showTokenList={showTokenList} key={3} tokenValue={tokenValue} tokens={tokens} />
+              <DefaultTokenList setTokens={setTokens} toChain={toChain} fromChain={fromChain} setFromCoin={setFromCoin} setShowTokenList={setShowTokenList} setToCoin={setToCoin} showTokenList={showTokenList} key={3} tokenValue={tokenValue} tokens={tokens} coins={coins} />
             </div>
           </div>
         </div>

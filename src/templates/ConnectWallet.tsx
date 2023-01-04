@@ -12,22 +12,31 @@ import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
 
 const { chains, provider } = configureChains(
-	[
-		chain.polygon,
+  [
+    chain.polygon,
     chain.mainnet,
     chain.optimism,
     chain.arbitrum,
-		{
-			id: 56,
-			name: "BNB",
-			network: "bsc",
-			rpcUrls: {
-				public: "https://bsc-dataseed1.binance.org/",
-				default: "https://bsc-dataseed1.binance.org/",
-			},
-		},
-	],
-	[alchemyProvider({ apiKey: "" }), publicProvider()]
+    {
+      id: 56,
+      name: "BNB",
+      network: "bsc",
+      rpcUrls: {
+        public: "https://bsc-dataseed1.binance.org/",
+        default: "https://bsc-dataseed1.binance.org/",
+      },
+    },
+    {
+      id: 43114,
+      name: "AVAX",
+      network: "bsc",
+      rpcUrls: {
+        public: "https://api.avax.network/ext/bc/C/rpc",
+        default: "https://api.avax.network/ext/bc/C/rpc",
+      },
+    },
+  ],
+  [alchemyProvider({ apiKey: "" }), publicProvider()]
 );
 
 const { connectors } = getDefaultWallets({
