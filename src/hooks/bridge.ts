@@ -713,7 +713,7 @@ export const swapFunds = async ({
       toTokenAddress: toToken.address,
       amount: (
         Number(stableCoinAmount) -
-        Number(stableCoinAmount) * 0.001
+        (Number(stableCoinAmount) * 0.001)
       ).toLocaleString("fullwide", { useGrouping: false }),
       slippage: "1",
     });
