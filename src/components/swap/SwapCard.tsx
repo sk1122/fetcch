@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { useAccount, useSigner } from 'wagmi';
 import { useGetTransactionData } from "../../hooks/getTransactions"
 
-import { useBridge } from '@/hooks/useBridge';
 import { Swap } from '@/icons/swap';
 
 import ChainSelect from './ChainSelect';
@@ -54,7 +53,7 @@ const SwapCard = () => {
 
   const changeFromChain = (value: Chain) => {
     if (toChain) {
-      let val: Chain = fromChain
+      // let val: Chain = fromChain
 			if (value.name === toChain.name) {
 				setToChain(fromChain);
       }
@@ -67,7 +66,7 @@ const SwapCard = () => {
 
   const changeToChain = (value: Chain) => {
     if (fromChain) {
-      let val = toChain
+      // let val = toChain
 			if (value.name === fromChain.name) {
         setFromChain(toChain);
       }
@@ -175,7 +174,7 @@ const SwapCard = () => {
         signer
       })
 			console.log(tx)
-      // setHash(tx);
+      setHash(tx);
 		}
 	}
 

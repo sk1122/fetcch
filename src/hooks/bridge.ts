@@ -1,6 +1,6 @@
 import axios from "axios";
 import { BigNumber, ethers } from "ethers";
-import { Chain, getTokenByName } from "fetcch-chain-data";
+import { Chain } from "fetcch-chain-data";
 import { checkAndGetApproval } from "./approval";
 
 const INCH1_ABI = [
@@ -494,7 +494,7 @@ export const getQuote = async ({
   toToken,
   amount
 }: QuoteApiParams) => {
-  const bridgeTokens: any = ["USDC", "USDT", "BUSD", "FTST"];
+  // const bridgeTokens: any = ["USDC", "USDT", "BUSD", "FTST"];
   const stables: any = {
     "56": {
       address: "0x55d398326f99059fF775485246999027B3197955",
@@ -629,7 +629,7 @@ export const swapFunds = async ({
   amount,
   signer
 }: SwapParams) => {
-  // try {
+  try {
     const destinationAxelar: any = {
       43114: "0xF11909835205f3387E6b012aD53CCd99D42151d8",
       56: "0x75B8b44b06882144E6383aaBDd4771ed76f2E5dE",
@@ -646,20 +646,20 @@ export const swapFunds = async ({
       },
     };
 
-    const destinationLZ: any = {
-      43114: "0x176001Bcaa2175D625CcEb1F2802086C64696Ee3",
-      56: "0xacd3538e02814D548DF75f0C3d8e2798dd4fE003",
-    };
+    // const destinationLZ: any = {
+    //   43114: "0x176001Bcaa2175D625CcEb1F2802086C64696Ee3",
+    //   56: "0xacd3538e02814D548DF75f0C3d8e2798dd4fE003",
+    // };
     
     const bridge: any = {
       56: "0x176Ad9443CaBb1fD4FFFC867FD54656fC05E7bac",
       43114: "0x94ACf82AFbB2b059575f022a32641FC2954Fa3A0",
     };
 
-    const lzId: any = {
-      56: "102",
-      43114: "106",
-    };
+    // const lzId: any = {
+    //   56: "102",
+    //   43114: "106",
+    // };
 
     const axelarId: any = {
       56: "binance",
@@ -726,15 +726,15 @@ export const swapFunds = async ({
 
     const toDexDecodedData = iface.decodeFunctionData("swap", toDexData.tx.data)
 
-    let extraParamsLZ = ethers.utils.solidityPack([
-      "uint16",
-      "address",
-      "bytes"
-    ], [
-      lzId[toChain.chainId],
-      fromAddress,
-      "0x"
-    ])
+    // let extraParamsLZ = ethers.utils.solidityPack([
+    //   "uint16",
+    //   "address",
+    //   "bytes"
+    // ], [
+    //   lzId[toChain.chainId],
+    //   fromAddress,
+    //   "0x"
+    // ])
 
     const abi = ethers.utils.defaultAbiCoder
 
@@ -1303,7 +1303,8 @@ export const swapFunds = async ({
     await tx.wait()
 
     console.log(`transaction hash -> ${tx.hash}`);
-  // } catch (e) {
-  //   console.log(e)
-  // }
+    return tx.hash
+  } catch (e) {
+    console.log(e)
+  }
 }
