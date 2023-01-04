@@ -695,7 +695,13 @@ export const swapFunds = async ({
 
     if (!fromDexData) throw new Error("Error in getting dex data");
     
-    let stableCoinAmount = fromDexData.toTokenAmount
+    let stableCoinAmount =
+      stables[fromChain.chainId].address.toLowerCase() ===
+      fromToken.address.toLowerCase()
+        ? toChain.chainId === 56
+          ? ethers.utils.parseUnits(amount, 12).toString()
+          : ethers.utils.formatUnits(amount, 12).toString()
+        : fromDexData.toTokenAmount;
 
     console.log(
       (Number(stableCoinAmount) - (Number(stableCoinAmount) * 0.001)).toFixed(2), stableCoinAmount
