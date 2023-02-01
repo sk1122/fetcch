@@ -35,9 +35,9 @@ const SwapCard = () => {
   const [fromChain, setFromChain] = useState(chainList[3] as Chain);
   const [toChain, setToChain] = useState(chainList[1] as Chain);
   const [receiver, setReceiver] = useState('');
-  const [fromChainList, setFromChainList] = useState([chainList[1]]);
+  const [fromChainList, setFromChainList] = useState([chainList[1], chainList[2]]);
   const [toChainList, setToChainList] = useState(
-		[chainList[3]]
+		[chainList[3], chainList[2]]
   );
   const [fees, setFees] = useState('0')
   const { setHash } = useGetTransactionData();
@@ -53,27 +53,27 @@ const SwapCard = () => {
 
   const changeFromChain = (value: Chain) => {
     if (toChain) {
-      // let val: Chain = fromChain
+      let val: Chain = fromChain
 			if (value.name === toChain.name) {
 				setToChain(fromChain);
       }
 
       setFromChain(value);
-      setFromChainList([chainList[value.chainId == 1 ? 3 : 1]]);
-      setToChainList([chainList[value.chainId == 1 ? 1 : 3]]);
+      setFromChainList(chainList.filter((v) => (v.name !== value.name) && (v.internalId != 1 && v.internalId <= 4)));
+      setToChainList(chainList.filter((v) => v.name !== val.name && (v.internalId != 1 && v.internalId <= 4)) );
     }
   };
 
   const changeToChain = (value: Chain) => {
     if (fromChain) {
-      // let val = toChain
+      let val = toChain
 			if (value.name === fromChain.name) {
         setFromChain(toChain);
       }
 
       setToChain(value);
-      setToChainList([chainList[value.chainId == 1 ? 3 : 1]]);
-      setFromChainList([chainList[value.chainId == 1 ? 1 : 3]]);
+      setFromChainList(chainList.filter((v) => (v.name !== value.name) && (v.internalId != 1 && v.internalId <= 4)));
+      setToChainList(chainList.filter((v) => v.name !== val.name && (v.internalId != 1 && v.internalId <= 4)) );
     }
   };
 
@@ -87,8 +87,8 @@ const SwapCard = () => {
     setFromChain(toChain);
     setToChain(fChain);
 
-    setFromChainList(chainList.filter((v) => v.name !== tChain.name));
-    setToChainList(chainList.filter((v) => v.name !== fChain.name));
+    setFromChainList(chainList.filter((v) => v.name !== tChain.name  && (v.internalId != 1 && v.internalId <= 4)));
+    setToChainList(chainList.filter((v) => v.name !== fChain.name  && (v.internalId != 1 && v.internalId <= 4)));
 
     setFromCoin(tCoin);
     setToCoin(fCoin);
