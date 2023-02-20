@@ -32,24 +32,14 @@ export const checkApprove = async (
 
   console.log(allowance);
 
-	const allowanceNumber = Number(
-		ethers.utils.formatUnits(allowance.toString(), token.decimals)
-	);
 	const amountNumber = Number(
 		ethers.utils.formatUnits(amount, token.decimals)
 	);
 
-	if (allowanceNumber >= amountNumber) {
-		return {
-			amount: "0",
-			required: false,
-		};
-	} else {
-		return {
-			amount: (amountNumber - allowanceNumber).toString(),
-			required: true,
-		};
-	}
+  return {
+    amount: amountNumber.toString(),
+    required: true,
+  };
 };
 
 export const approve = async (
