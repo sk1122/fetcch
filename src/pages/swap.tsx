@@ -7,7 +7,7 @@ import { Main } from '@/templates/Main';
 import toast from "react-hot-toast";
 
 const swap = () => {
-useEffect(() => toast("please enter amount less than 5$, amount greater than 5$ will be lost forever"))  
+useEffect(() => toast.success("please enter amount less than 5$, amount greater than 5$ will be lost forever"))  
 
 return (
     <Main
