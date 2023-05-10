@@ -710,7 +710,7 @@ export const swapFunds = async ({
       fromChainId: toChain.chainId.toString(),
       fromAddress: bridge[toChain.chainId],
       destReceiver: receiver,
-      fromTokenAddress: stables[toChain.chainId].address.toLowerCase() !== toToken.address.toLowerCase() ? stables[toChain.chainId].address.toLowerCase() : toToken.address.toLowerCase() === toTokenAddress.toLowerCase() ? stables[toChain.chainId].address.toLowerCase() : "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      fromTokenAddress: stables[toChain.chainId].address.toLowerCase() !== toToken.address.toLowerCase() ? stables[toChain.chainId].address.toLowerCase() : toToken.address.toLowerCase() === "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" ? stables[toChain.chainId].address.toLowerCase() : "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
       toTokenAddress: toToken.address,
       amount: (
         Number(stableCoinAmount) -
