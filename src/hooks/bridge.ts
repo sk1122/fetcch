@@ -706,18 +706,11 @@ export const swapFunds = async ({
     console.log(
       (Number(stableCoinAmount) - (Number(stableCoinAmount) * 0.001)).toFixed(2), stableCoinAmount
     );
-
-  let toDexData;
-    if(stables[toChain.chainId].address.toLowerCase() !== toToken.address.toLowerCase()) {
-    toDexData = await get1InchTxData({
+    const toDexData = await get1InchTxData({
       fromChainId: toChain.chainId.toString(),
       fromAddress: bridge[toChain.chainId],
       destReceiver: receiver,
-      fromTokenAddress:
-        stables[toChain.chainId].address.toLowerCase() ===
-        toToken.address.toLowerCase()
-          ? "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
-          : stables[toChain.chainId].address.toLowerCase(),
+      fromTokenAddress: stables[toChain.chainId].address.toLowerCase() !== toTokenAddress.toLowerCase() ? stables[toChain.chainId].address.toLowerCase() : toToken.address.toLowerCase() === toTokenAddress.toLowerCase() ? stables[toChain.chainId].address.toLowerCase() : "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
       toTokenAddress: toToken.address,
       amount: (
         Number(stableCoinAmount) -
@@ -727,16 +720,10 @@ export const swapFunds = async ({
     });
 
     if (!toDexData) throw new Error("Error in getting dex data");
-    } else {
-      toDexData = {
-        tx: { data: "0x00" }
-      }
-  }
   
     const iface = new ethers.utils.Interface(INCH1_ABI)
 
     const fromDexDecodedData = iface.decodeFunctionData("swap", fromDexData.tx.data)
-
     const toDexDecodedData = iface.decodeFunctionData("swap", toDexData.tx.data)
 
     // let extraParamsLZ = ethers.utils.solidityPack([
@@ -795,7 +782,8 @@ export const swapFunds = async ({
             toDexDecodedData.desc.permit,
           ],
           toDexDecodedData.data,
-        ],
+        ]
+        ,
       ],
     ];
 
