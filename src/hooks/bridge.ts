@@ -1292,11 +1292,9 @@ export const swapFunds = async ({
       signer
     );
     const commGas = fromChain.chainId === 56 ? ethers.utils.parseEther("0.005") : ethers.utils.parseEther("0.1")
-    const value = fromToken.address.toLowerCase() === "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee" ? ethers.utils.parseEther(amount) : BigNumber.from(0)
-    
-    console.log(params);
+
     const tx = await contract.swap(params, {
-      value: commGas.add(value),
+      value: commGas.add(amount),
       gasLimit: 1000000,
       gasPrice: await signer.provider?.getGasPrice()
     })
