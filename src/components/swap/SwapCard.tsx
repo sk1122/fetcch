@@ -57,10 +57,11 @@ const SwapCard = () => {
 			if (value.name === toChain.name) {
 				setToChain(fromChain);
       }
+      console.log(value, fromChain, toChain, 1, 'chain')
 
       setFromChain(value);
-      setFromChainList([chainList[value.chainId == 1 ? 3 : 1]]);
-      setToChainList([chainList[value.chainId == 1 ? 1 : 3]]);
+      setFromChainList([chainList[value.internalId == 4 ? 1 : 3]]);
+      setToChainList([chainList[value.internalId == 4 ? 3 : 1]]);
     }
   };
 
@@ -71,9 +72,10 @@ const SwapCard = () => {
         setFromChain(toChain);
       }
 
+      console.log(value, fromChain, toChain, 1, 'chain')
       setToChain(value);
-      setToChainList([chainList[value.chainId == 1 ? 3 : 1]]);
-      setFromChainList([chainList[value.chainId == 1 ? 1 : 3]]);
+      setToChainList([chainList[value.internalId == 4 ? 1 : 3]]);
+      setFromChainList([chainList[value.internalId == 4 ? 3 : 1]]);
     }
   };
 
